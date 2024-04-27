@@ -1,14 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
+import { useNavigation, useRouter } from 'expo-router';
 
 
 const Index = () => {
+  const navigate = useNavigation();
+  const router = useRouter();
+  
+  const handleStart = () => {
+    router.push("/trivia") 
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>PacTrivia</Text>
       <Text style={styles.description}>Answer questions correctly for a chance to win cool perks</Text>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleStart}>
         <Text style={styles.buttonText}>START</Text>
       </TouchableOpacity>
     </View>
