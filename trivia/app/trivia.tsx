@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import AnswerModal from '../components/answerFeedback';
+import { transform } from '@babel/core';
+
 
 const TriviaScreen = () => {
     const localImage = require('./timer.png');
-
-
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [timer, setTimer] = useState(30);
 
 type AnswerChoice = {
@@ -35,12 +37,48 @@ type AnswerChoice = {
         ref={buttonRefs.current[index]}
         style={getAnswerButtonStyle(choice.color)}
       >
-        <Pressable style={styles.pressable} onPressIn={() => handlePressIn(index)}>
+        <Pressable
+          style={styles.pressable}
+          onPressIn={() => handlePressIn(index)}
+          onPress={() => handleAnswerPress(choice.text)}
+        >
           <Text style={styles.answerText}>{choice.text}</Text>
         </Pressable>
       </Animatable.View>
     );
   };
+
+  
+  const [showModal, setShowModal] = useState(false);
+  const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (showModal) {
+      timer = setTimeout(() => {
+        setShowModal(false);
+        setSelectedAnswer(null);
+      
+      }, 1000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [showModal]);
+
+  const handleAnswerPress = (answer: string) => {
+    setSelectedAnswer(answer);
+    setIsAnswerCorrect(answer === 'Friends');
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedAnswer(null);
+  };
+
   
   
   
@@ -99,8 +137,12 @@ type AnswerChoice = {
         <View style={styles.answers}>
           {answerChoices.map((choice, index) => renderAnswerButton(choice, index))}
         </View>
+        <AnswerModal visible={showModal} isCorrect={isAnswerCorrect} />
+
       </View>
-      </View>
+    </View>
+
+
     </View>
    
   );
@@ -199,7 +241,7 @@ const styles = StyleSheet.create({
   },
   answerButton: {
 
-    width: '48%',
+    width: '48%', 
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
@@ -211,7 +253,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'white',
-  }
+  },
+
 });
 
 export default TriviaScreen;
