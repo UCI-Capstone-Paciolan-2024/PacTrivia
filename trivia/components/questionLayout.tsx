@@ -3,15 +3,18 @@ import { View} from "react-native-animatable";
 import AnswerButton from "./answerButton";
 import { StyleSheet } from "react-native";
 
-const answerChoices = [
-    { text: 'Friends', color: '#FF6768' },
-    { text: 'The Office', color: '#FFD747' },
-    { text: 'Parks & Rec', color: '#4DBD33' },
-    { text: 'Big Bang Theory', color: '#4D79FF' },
-];
+
+interface AnswerChoice {
+    text: string;
+    color: string;
+}
+
+interface QuestionLayoutProps {
+    answerChoices: AnswerChoice[];
+}
 
 // question layout component
-const QuestionLayout = () => {
+const QuestionLayout = ({answerChoices} : QuestionLayoutProps) => {
     return (
         <View style={styles.container}>
             {answerChoices.map((choice, index) => (

@@ -9,6 +9,21 @@ import { transform } from '@babel/core';
 import QuestionLayout from '../components/questionLayout';
 import GameHeader from '../components/gameHeader';
 
+
+interface AnswerChoice {
+  text: string;
+  color: string;
+}
+
+const defaultQuestion = "In which popular TV sitcom can a shirt featuring the UCI Anteaters mascot be spotted?"
+
+const defaultAnswerChoices = [
+  { text: 'Friends', color: '#FF6768' },
+  { text: 'The Office', color: '#FFD747' },
+  { text: 'Parks & Rec', color: '#4DBD33' },
+  { text: 'Big Bang Theory', color: '#4D79FF' },
+];
+
 const TriviaScreen = () => {
   const localImage = require('./timer.png');
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -16,6 +31,21 @@ const TriviaScreen = () => {
   
   const [showModal, setShowModal] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
+
+
+  const [currentQuestion, setCurrentQuestion] = useState<string | null>(defaultQuestion);
+  const [currentAnswerSet, setCurrentAnswerSet] = useState<AnswerChoice[]>(defaultAnswerChoices);
+
+  // updating answer choices
+  const updateAnswers = (newAnswers: AnswerChoice[]) => {
+    setCurrentAnswerSet(newAnswers);
+  };
+
+  // update Question
+  const updateQuestion = (newQuestion: string) => {
+    setCurrentQuestion(newQuestion)
+  }
+
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -80,10 +110,10 @@ const TriviaScreen = () => {
 
       <View style={styles.content}>
         <Text style={styles.question}>
-            In which popular TV sitcom can a shirt featuring the UCI Anteaters mascot be spotted?
+            {currentQuestion}
         </Text>
         
-        <QuestionLayout></QuestionLayout>
+        <QuestionLayout answerChoices={currentAnswerSet}></QuestionLayout>
         
         <AnswerModal visible={showModal} isCorrect={isAnswerCorrect} />
       </View>
