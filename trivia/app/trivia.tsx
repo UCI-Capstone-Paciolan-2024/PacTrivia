@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'react-native';
 import * as Animatable from 'react-native-animatable';
@@ -10,19 +10,29 @@ import QuestionLayout from '../components/questionLayout';
 import GameHeader from '../components/gameHeader';
 
 
-interface AnswerChoice {
-  text: string;
-  color: string;
-}
+const answerChoicesJson = {
+  "qna": [
+    {
+    question: "In which popular TV sitcom can a shirt featuring the UCI Anteaters mascot be spotted?",
+    answers: [
+      { text: 'Friends', color: '#FF6768' },
+      { text: 'The Office', color: '#FFD747' },
+      { text: 'Parks & Rec', color: '#4DBD33' },
+      { text: 'Big Bang Theory', color: '#4D79FF' },
+    ]
+    },
+    {
+      question: "Which of the movies below was filmed at UCI?",
+      answers: [
+        { text: 'Dawn of the Planet of the Apes', color: '#FF6768' },
+        { text: 'Rise of the Planet of the Apes', color: '#FFD747' },
+        { text: 'War for the Planet of the Apes', color: '#4DBD33' },
+        { text: 'Planet of the Apes', color: '#4D79FF' },
+      ]
+    }
+  ],  
+};
 
-const defaultQuestion = "In which popular TV sitcom can a shirt featuring the UCI Anteaters mascot be spotted?"
-
-const defaultAnswerChoices = [
-  { text: 'Friends', color: '#FF6768' },
-  { text: 'The Office', color: '#FFD747' },
-  { text: 'Parks & Rec', color: '#4DBD33' },
-  { text: 'Big Bang Theory', color: '#4D79FF' },
-];
 
 const TriviaScreen = () => {
   const localImage = require('./timer.png');
@@ -32,21 +42,13 @@ const TriviaScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
 
+  const [currentQuestionIndex, setQuestionIndex] = useState(0);
 
-  const [currentQuestion, setCurrentQuestion] = useState<string | null>(defaultQuestion);
-  const [currentAnswerSet, setCurrentAnswerSet] = useState<AnswerChoice[]>(defaultAnswerChoices);
-
-  // updating answer choices
-  const updateAnswers = (newAnswers: AnswerChoice[]) => {
-    setCurrentAnswerSet(newAnswers);
-  };
-
-  // update Question
-  const updateQuestion = (newQuestion: string) => {
-    setCurrentQuestion(newQuestion)
+  const incrementIndex = () => {
+    setQuestionIndex(currentQuestionIndex + 1);
   }
 
-
+  // timer logic?
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -110,13 +112,15 @@ const TriviaScreen = () => {
 
       <View style={styles.content}>
         <Text style={styles.question}>
-            {currentQuestion}
+            {answerChoicesJson.qna[currentQuestionIndex].question}
         </Text>
         
-        <QuestionLayout answerChoices={currentAnswerSet}></QuestionLayout>
+        <QuestionLayout answerChoices={answerChoicesJson.qna[currentQuestionIndex].answers}></QuestionLayout>
         
         <AnswerModal visible={showModal} isCorrect={isAnswerCorrect} />
       </View>
+      {/* DEBUG BUTTON remove when finished testing screen state */}
+      <button onClick={incrementIndex}>Next Question</button>
     </View>
    
   );
