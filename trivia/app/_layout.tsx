@@ -16,6 +16,8 @@ export default function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="trivia" options={{headerShown: false}} />
+        <Stack.Screen name="endpage" options={{headerShown: false}} />
       </Stack>
   );
 }
+p

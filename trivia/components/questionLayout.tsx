@@ -9,17 +9,14 @@ interface AnswerChoice {
     color: string;
 }
 
-interface QuestionLayoutProps {
-    answerChoices: AnswerChoice[];
-}
 
 // question layout component
-const QuestionLayout = ({answerChoices} : QuestionLayoutProps) => {
+const QuestionLayout = ({answerChoices, onButtonClick} : {answerChoices: AnswerChoice[], onButtonClick: () => void}) => {
     return (
         <View style={styles.container}>
-            {answerChoices.map((choice, index) => (
+            {answerChoices.map((choice: { text: string; color: string; }, index: number) => (
                 <View style={styles.box}>
-                    <AnswerButton key={index} choice={choice} index={index} />
+                    <AnswerButton key={index} choice={choice} index={index} onButtonClick={onButtonClick} />
                 </View>
             ))}
         </View>

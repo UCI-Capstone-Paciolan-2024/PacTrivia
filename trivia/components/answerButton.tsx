@@ -2,14 +2,14 @@ import * as Animatable from 'react-native-animatable';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useState, useRef } from 'react';
 
-// creating interface for answer choice
 type AnswerChoice = {
     text: string;
     color: string;
-  };
+};
 
-// answer button component, takes in an AnswerChoice type (text, color) alongside an index number
-const AnswerButton = ({ choice, index }: { choice: AnswerChoice, index: number }) => {
+
+// answer button component, takes in an AnswerChoice type (text, color) alongside an index number and function to handle when button is clicked
+const AnswerButton = ({ choice, index, onButtonClick }: { choice: AnswerChoice, index: number, onButtonClick: () => void}) => {
     const buttonRef = useRef<Animatable.View & TouchableOpacity>(null);
 
     // send the answer here to the backend
@@ -18,11 +18,12 @@ const AnswerButton = ({ choice, index }: { choice: AnswerChoice, index: number }
             // pulsing animation, if it shows as an error to you it still compiles tho
             buttonRef.current.pulse(800);
         }
+        return index
     };
 
     return (
         <Animatable.View ref={buttonRef} style={[styles.answerButton, { backgroundColor: choice.color }]}>
-            <TouchableOpacity onPressIn={handlePressIn} style={styles.fullSize}>
+            <TouchableOpacity onPressIn={() => {handlePressIn(); onButtonClick();}} style={styles.fullSize}>
                 <Text style={styles.answerText}>{choice.text}</Text>
             </TouchableOpacity>
         </Animatable.View>
