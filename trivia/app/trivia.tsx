@@ -10,99 +10,112 @@ import QuestionLayout from '../components/questionLayout';
 import GameHeader from '../components/gameHeader';
 import { useNavigation, useRouter } from 'expo-router';
 
+export interface AnswerChoice {
+  question: string;
+  answers: AnswerType[];
+}
+
+export interface AnswerType {
+  text: string;
+}
+
+export interface QuestionLayoutProps {
+  data: AnswerChoice[];
+}
+
+
 
 // example json potentially
-// TODO: handle the colors on the frontend side and not the backend side
-const answerChoicesJson = {
-  "qna": [
+const answerChoicesJson:QuestionLayoutProps = {
+  data: [
     {
       question: "In which popular TV sitcom can a shirt featuring the UCI Anteaters mascot be spotted?",
       answers: [
-        { text: 'Friends', color: '#FF6768' },
-        { text: 'The Office', color: '#FFD747' },
-        { text: 'Parks & Rec', color: '#4DBD33' },
-        { text: 'Big Bang Theory', color: '#4D79FF' },
+        { text: 'Friends'},
+        { text: 'The Office'},
+        { text: 'Parks & Rec'},
+        { text: 'Big Bang Theory'},
       ]
     },
     {
       question: "Which of the movies below was filmed at UCI?",
       answers: [
-        { text: 'Dawn of the Planet of the Apes', color: '#FF6768' },
-        { text: 'Rise of the Planet of the Apes', color: '#FFD747' },
-        { text: 'War for the Planet of the Apes', color: '#4DBD33' },
-        { text: 'Planet of the Apes', color: '#4D79FF' },
+        { text: 'Dawn of the Planet of the Apes'},
+        { text: 'Rise of the Planet of the Apes'},
+        { text: 'War for the Planet of the Apes'},
+        { text: 'Planet of the Apes'},
       ]
     },
     {
       question: "Which UCI building is named after the author of a famous series of science fiction novels?",
       answers: [
-        { text: 'Frank Herbert Hall', color: '#FF6768' },
-        { text: 'George R.R. Martin Center', color: '#FFD747' },
-        { text: 'J.K. Rowling Library', color: '#4DBD33' },
-        { text: 'Isaac Asimov Science Hall', color: '#4D79FF' },
+        { text: 'Frank Herbert Hall'},
+        { text: 'George R.R. Martin Center'},
+        { text: 'J.K. Rowling Library'},
+        { text: 'Isaac Asimov Science Hall'},
       ]
     },
     {
       question: "UCI was established in what year?",
       answers: [
-        { text: '1965', color: '#FF6768' },
-        { text: '1950', color: '#FFD747' },
-        { text: '1975', color: '#4DBD33' },
-        { text: '1982', color: '#4D79FF' },
+        { text: '1965'},
+        { text: '1950'},
+        { text: '1975'},
+        { text: '1982'},
       ]
     },
     {
       question: "What unique sports team does UCI have?",
       answers: [
-        { text: 'Quidditch', color: '#FF6768' },
-        { text: 'Underwater Hockey', color: '#FFD747' },
-        { text: 'Elephant Polo', color: '#4DBD33' },
-        { text: 'Camel Racing', color: '#4D79FF' },
+        { text: 'Quidditch'},
+        { text: 'Underwater Hockey'},
+        { text: 'Elephant Polo'},
+        { text: 'Camel Racing'},
       ]
     },
     {
       question: "Which famous actor is an alumnus of UCI?",
       answers: [
-        { text: 'Jon Lovitz', color: '#FF6768' },
-        { text: 'James Franco', color: '#FFD747' },
-        { text: 'Steve Carell', color: '#4DBD33' },
-        { text: 'Brad Pitt', color: '#4D79FF' },
+        { text: 'Jon Lovitz'},
+        { text: 'James Franco'},
+        { text: 'Steve Carell'},
+        { text: 'Brad Pitt'},
       ]
     },
     {
       question: "What is the name of the UCI mascot?",
       answers: [
-        { text: 'Peter the Anteater', color: '#FF6768' },
-        { text: 'Sammy the Slug', color: '#FFD747' },
-        { text: 'Ollie the Otter', color: '#4DBD33' },
-        { text: 'Eddie the Eagle', color: '#4D79FF' },
+        { text: 'Peter the Anteater'},
+        { text: 'Sammy the Slug'},
+        { text: 'Ollie the Otter'},
+        { text: 'Eddie the Eagle'},
       ]
     },
     {
       question: "UCI is particularly renowned for its research in which field?",
       answers: [
-        { text: 'Coastal Ecology', color: '#FF6768' },
-        { text: 'Quantum Physics', color: '#FFD747' },
-        { text: 'Cognitive Sciences', color: '#4DBD33' },
-        { text: 'Medieval History', color: '#4D79FF' },
+        { text: 'Coastal Ecology'},
+        { text: 'Quantum Physics'},
+        { text: 'Cognitive Sciences'},
+        { text: 'Medieval History'},
       ]
     },
     {
       question: "Which UCI faculty member won a Nobel Prize?",
       answers: [
-        { text: 'Irwin Rose in Chemistry', color: '#FF6768' },
-        { text: 'Frederick Reines in Physics', color: '#FFD747' },
-        { text: 'Sherwood Rowland in Chemistry', color: '#4DBD33' },
-        { text: 'Elizabeth Blackburn in Medicine', color: '#4D79FF' },
+        { text: 'Irwin Rose in Chemistry'},
+        { text: 'Frederick R' },
+        { text: 'Sherwood Rowland in Chemistry'},
+        { text: 'Elizabeth Blackburn in Medicine'},
       ]
     },
     {
       question: "What unique feature can be found at UCI's campus center?",
       answers: [
-        { text: 'An underground concert hall', color: '#FF6768' },
-        { text: 'A rooftop garden', color: '#FFD747' },
-        { text: 'A wildlife sanctuary', color: '#4DBD33' },
-        { text: 'A decommissioned submarine', color: '#4D79FF' },
+        { text: 'An underground concert hall'},
+        { text: 'A rooftop garden'},
+        { text: 'A wildlife sanctuary'},
+        { text: 'A decommissioned submarine'},
       ]
     }
   ],  
@@ -124,9 +137,12 @@ const TriviaScreen = () => {
   const navigate = useNavigation();
   const router = useRouter();
 
+  const [isActive, setIsActive] = useState(true);
+
   const incrementIndex = () => {
     // check if we are on the last question, if so then navigate to end page
-    if (currentQuestionIndex === 9) {
+    const totalQuestions = answerChoicesJson.data.length - 1
+    if (currentQuestionIndex === totalQuestions) {
       router.push("/endpage")
     }
     else {
@@ -164,26 +180,30 @@ const TriviaScreen = () => {
 
   const resetTimer = () => {
     setTimer(30); 
+    setIsActive(true);
   };
   
   // timer logic
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer === 1) {
-          clearInterval(interval);
-          return 0;
-        } else {
-          return prevTimer - 1;
-        }
-      });
-    }, 1000);
+    let interval: NodeJS.Timeout | undefined;
 
-    return () => {
-      clearInterval(interval);
-      resetTimer();
-    };
-  }, []);
+    if (isActive && timer > 0) {
+      interval = setInterval(() => {
+          setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+    } 
+    // reset timer
+    else if (timer === 0) {
+      setIsActive(false);
+      setTimeout(() => {
+          setTimer(30);
+          setIsActive(true);
+          incrementIndex();
+      }, 1000);  // adding a slight delay
+    }
+
+    return () => clearInterval(interval);
+}, [isActive, timer]);
 
   return (
   
@@ -198,10 +218,10 @@ const TriviaScreen = () => {
 
       <View style={styles.content}>
         <Text style={styles.question}>
-            {answerChoicesJson.qna[currentQuestionIndex].question}
+            {answerChoicesJson.data[currentQuestionIndex].question}
         </Text>
         
-        <QuestionLayout answerChoices={answerChoicesJson.qna[currentQuestionIndex].answers} onButtonClick={() => {incrementIndex(); resetTimer();}}></QuestionLayout>
+        <QuestionLayout choices={answerChoicesJson.data[currentQuestionIndex].answers} onButtonClick={() => {incrementIndex(); resetTimer();}}></QuestionLayout>
         
         <AnswerModal visible={showModal} isCorrect={isAnswerCorrect} />
       </View>

@@ -2,21 +2,16 @@ import React from "react";
 import { View} from "react-native-animatable";
 import AnswerButton from "./answerButton";
 import { StyleSheet } from "react-native";
-
-
-interface AnswerChoice {
-    text: string;
-    color: string;
-}
+import { AnswerType } from "../app/trivia";
 
 
 // question layout component
-const QuestionLayout = ({answerChoices, onButtonClick} : {answerChoices: AnswerChoice[], onButtonClick: () => void}) => {
+const QuestionLayout = ({choices, onButtonClick} : {choices: AnswerType[], onButtonClick: () => void}) => {
     return (
         <View style={styles.container}>
-            {answerChoices.map((choice: { text: string; color: string; }, index: number) => (
+            {choices.map((choice, index) => (
                 <View style={styles.box}>
-                    <AnswerButton key={index} choice={choice} index={index} onButtonClick={onButtonClick} />
+                    <AnswerButton key={index} choice={choice.text} index={index} onButtonClick={onButtonClick} />
                 </View>
             ))}
         </View>

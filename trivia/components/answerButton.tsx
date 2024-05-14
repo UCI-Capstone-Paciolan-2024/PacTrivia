@@ -1,15 +1,18 @@
 import * as Animatable from 'react-native-animatable';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useState, useRef } from 'react';
+import { AnswerChoice } from '../app/trivia';
 
-type AnswerChoice = {
-    text: string;
-    color: string;
-};
+const buttonColors = [
+    '#FF6768',
+    '#FFD747',
+    '#4DBD33',
+    '#4D79FF'
+]
 
 
 // answer button component, takes in an AnswerChoice type (text, color) alongside an index number and function to handle when button is clicked
-const AnswerButton = ({ choice, index, onButtonClick }: { choice: AnswerChoice, index: number, onButtonClick: () => void}) => {
+const AnswerButton = ({ choice, index, onButtonClick }: { choice: string, index: number, onButtonClick: () => void}) => {
     const buttonRef = useRef<Animatable.View & TouchableOpacity>(null);
 
     // send the answer here to the backend
@@ -18,13 +21,13 @@ const AnswerButton = ({ choice, index, onButtonClick }: { choice: AnswerChoice, 
             // pulsing animation, if it shows as an error to you it still compiles tho
             buttonRef.current.pulse(800);
         }
-        return index
+        console.log(index)
     };
 
     return (
-        <Animatable.View ref={buttonRef} style={[styles.answerButton, { backgroundColor: choice.color }]}>
+        <Animatable.View ref={buttonRef} style={[styles.answerButton, { backgroundColor: buttonColors[index] }]}>
             <TouchableOpacity onPressIn={() => {handlePressIn(); onButtonClick();}} style={styles.fullSize}>
-                <Text style={styles.answerText}>{choice.text}</Text>
+                <Text style={styles.answerText}>{choice}</Text>
             </TouchableOpacity>
         </Animatable.View>
     );
