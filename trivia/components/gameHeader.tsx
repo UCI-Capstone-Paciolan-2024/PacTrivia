@@ -1,73 +1,51 @@
-import { View, Text } from "react-native-animatable";
-import { StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-
-export default function GameHeader(props: {HomeTeam: string, AwayTeam: string}) {
-    return(
-        <View style={styles.gameHeader}>
-            <View style={styles.teamLeft}>
-                <Text>{props.HomeTeam}</Text>
-            </View>
-            
-            <Text style={styles.gameText}>PacTrivia</Text>
-            
-            <View style={styles.teamRight}>
-                <Text>{props.AwayTeam}</Text>
-            </View>
-        </View>
-
-    )
+interface GameHeaderProps {
+  HomeTeam: string;
+  AwayTeam: string;
 }
 
+const GameHeader: React.FC<GameHeaderProps> = ({ HomeTeam, AwayTeam }) => {
+  return (
+    <View style={styles.headerContainer}>
+      <Text style={styles.teamText}>{HomeTeam}</Text>
+      <Text style={styles.titleText}>PacTrivia</Text>
+      <Text style={styles.teamText}>{AwayTeam}</Text>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-    gameHeader: {
-        flexDirection: "row",
-        justifyContent: 'center', 
-        alignItems: "center",
-        backgroundColor: 'white',
-        height: "12%",
-        width: '100%',
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        position: 'relative', 
-        paddingTop: 40, 
-       
-      },
-      teamLeft: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        justifyContent: 'center', 
-        alignItems: 'center',
-        paddingLeft: 15, 
-        width: '35%', 
-        zIndex: 0, 
-        marginTop: 40,
-        backgroundColor: "transparent",
-        fontWeight: "bold",
-      },
-      teamRight: {
-        position: 'absolute',
-        right: 0, 
-        top: 0,
-        bottom: 0, 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        paddingRight: 15,
-        width: '35%',
-        zIndex: 0, 
-        marginTop: 40,
-        backgroundColor: "transparent",
-        fontWeight: "bold",
-      },
-      gameText: {
-    
-        fontWeight: 'bold',
-        color: '#989595',
-        fontSize: 24,
-        zIndex: 1, 
-        fontFamily: "",
-        
-      }
-})
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: '#6E6C6C',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  teamText: {
+    flex: 1,
+    fontSize: 18,
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  titleText: {
+    flex: 2,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+  },
+});
+
+export default GameHeader;

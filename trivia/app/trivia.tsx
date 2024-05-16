@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated, Button } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import AnswerModal from '../components/answerFeedback';
-import { transform } from '@babel/core';
-
 import QuestionLayout from '../components/questionLayout';
 import GameHeader from '../components/gameHeader';
 import { useNavigation, useRouter } from 'expo-router';
+import ProgressBar from '../components/progressBar';
 
 export interface AnswerChoice {
   question: string;
@@ -121,143 +116,84 @@ const answerChoicesJson:QuestionLayoutProps = {
   ],  
 };
 
-
-
 const TriviaScreen = () => {
-  // const localImage = require('./timer.png');
-  const localImage = require('../assets/images/timer.png')
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [timer, setTimer] = useState(30);
-  
-  const [showModal, setShowModal] = useState(false);
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
-
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
+  const [progressColors, setProgressColors] = useState<string[]>(Array(10).fill('#e0e0e0'));
 
   const navigate = useNavigation();
   const router = useRouter();
 
-  const [isActive, setIsActive] = useState(true);
-
   const incrementIndex = () => {
-    // check if we are on the last question, if so then navigate to end page
-    const totalQuestions = answerChoicesJson.data.length - 1
+    const totalQuestions = answerChoicesJson.data.length - 1;
     if (currentQuestionIndex === totalQuestions) {
-      router.push("/endpage")
-    }
-    else {
+      setQuestionIndex(0);
+      //router.push("/endpage")
+    } else {
       setQuestionIndex(currentQuestionIndex + 1);
     }
-  }
-
-  // pop up logic
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    if (showModal) {
-      timer = setTimeout(() => {
-        setShowModal(false);
-        setSelectedAnswer(null);
-      
-      }, 1000);
-    }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [showModal]);
+  };
 
   const handleAnswerPress = (answer: string) => {
-    setSelectedAnswer(answer);
-    setIsAnswerCorrect(answer === 'Friends');
-    setShowModal(true);
-  };
-
-  const handleModalClose = () => {
-    setShowModal(false);
-    setSelectedAnswer(null);
-  };
-
-  const resetTimer = () => {
-    setTimer(30); 
-    setIsActive(true);
-  };
-  
-  // timer logic
-  useEffect(() => {
-    let interval: NodeJS.Timeout | undefined;
-
-    if (isActive && timer > 0) {
-      interval = setInterval(() => {
-          setTimer(prevTimer => prevTimer - 1);
-      }, 1000);
-    } 
-    // reset timer
-    else if (timer === 0) {
-      setIsActive(false);
-      setTimeout(() => {
-          setTimer(30);
-          setIsActive(true);
-          incrementIndex();
-      }, 1000);  // adding a slight delay
+    const correctAnswer = answerChoicesJson.data[currentQuestionIndex].answers[0].text;
+    let newProgressColors = [...progressColors];
+    if (answer === correctAnswer) {
+      newProgressColors[currentQuestionIndex] = '#52BE80';
+    } else {
+      newProgressColors[currentQuestionIndex] = '#EC7063';
     }
-
-    return () => clearInterval(interval);
-}, [isActive, timer]);
+    setProgressColors(newProgressColors);
+    incrementIndex();
+  };
 
   return (
-  
     <View style={styles.container}>
-      
-      <GameHeader HomeTeam='UC Irvine' AwayTeam='CSU Long Beach'></GameHeader>
-
+      <GameHeader HomeTeam='UC Irvine' AwayTeam='CSU Long Beach' />
       <View style={styles.header}>
-        <Image source={localImage} style={{ width: 10, height: 20, padding: 10 }} />
-        <Text style={styles.timer}>{`${timer}s`}</Text>
+        <ProgressBar progressColors={progressColors} />
       </View>
-
       <View style={styles.content}>
         <Text style={styles.question}>
-            {answerChoicesJson.data[currentQuestionIndex].question}
+          {answerChoicesJson.data[currentQuestionIndex].question}
         </Text>
-        
-        <QuestionLayout choices={answerChoicesJson.data[currentQuestionIndex].answers} onButtonClick={() => {incrementIndex(); resetTimer();}}></QuestionLayout>
-        
-        <AnswerModal visible={showModal} isCorrect={isAnswerCorrect} />
+        <QuestionLayout
+          choices={answerChoicesJson.data[currentQuestionIndex].answers}
+          onButtonClick={(answer) => handleAnswerPress(answer.text)}
+        />
       </View>
     </View>
-   
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D6D6D6',
-    alignItems: "center",
-
+    backgroundColor: '#f8f8f8',
+    alignItems: 'center',
+    paddingTop: 50,
   },
   header: {
-    padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  timer: {
-    fontSize: 18,
-    color: 'black',
-
+    width: '90%',
+    marginVertical: 20,
   },
   content: {
     padding: 20,
-    alignItems: 'center'
-
+    alignItems: 'center',
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
   question: {
-    fontSize: 24,
+    fontSize: 24, 
     fontWeight: 'bold',
     marginBottom: 20,
-    color: 'black',
+    color: '#333',
+    textAlign: 'center',
   },
 });
 

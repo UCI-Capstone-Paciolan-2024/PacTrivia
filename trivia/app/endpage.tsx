@@ -6,7 +6,7 @@ const EndPage = () => {
     
     return (
       <View>
-        EndPage
+        <Text>EndPage testing</Text>
       </View>
     );
   };

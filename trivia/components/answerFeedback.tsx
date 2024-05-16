@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   correctModal: {
-    backgroundColor: 'green',
+    backgroundColor: '#90EE90',
   },
   incorrectModal: {
     backgroundColor: 'red',
