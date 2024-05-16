@@ -115,20 +115,18 @@ const answerChoicesJson:QuestionLayoutProps = {
     }
   ],  
 };
-
 const TriviaScreen = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(Array(10).fill('#e0e0e0'));
+  const [score, setScore] = useState(0);
 
-  const navigate = useNavigation();
   const router = useRouter();
 
   const incrementIndex = () => {
     const totalQuestions = answerChoicesJson.data.length - 1;
     if (currentQuestionIndex === totalQuestions) {
-      setQuestionIndex(0);
-      //router.push("/endpage")
+      router.replace({ pathname: '/endpage', params: { score } });
     } else {
       setQuestionIndex(currentQuestionIndex + 1);
     }
@@ -139,6 +137,7 @@ const TriviaScreen = () => {
     let newProgressColors = [...progressColors];
     if (answer === correctAnswer) {
       newProgressColors[currentQuestionIndex] = '#52BE80';
+      setScore(score + 1);
     } else {
       newProgressColors[currentQuestionIndex] = '#EC7063';
     }
