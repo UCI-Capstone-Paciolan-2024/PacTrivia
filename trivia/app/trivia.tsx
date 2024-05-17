@@ -124,9 +124,9 @@ const TriviaScreen = () => {
   const router = useRouter();
 
   const incrementIndex = () => {
-    const totalQuestions = answerChoicesJson.data.length - 1;
-    if (currentQuestionIndex === totalQuestions) {
-      router.replace({ pathname: '/endpage', params: { score } });
+    const totalQuestions = answerChoicesJson.data.length;
+    if (currentQuestionIndex === totalQuestions - 1) {
+      router.replace({ pathname: '/endpage', params: { score: score + 1 } });
     } else {
       setQuestionIndex(currentQuestionIndex + 1);
     }
@@ -136,10 +136,10 @@ const TriviaScreen = () => {
     const correctAnswer = answerChoicesJson.data[currentQuestionIndex].answers[0].text;
     let newProgressColors = [...progressColors];
     if (answer === correctAnswer) {
-      newProgressColors[currentQuestionIndex] = '#52BE80';
-      setScore(score + 1);
+      newProgressColors[currentQuestionIndex] = '#C0C0C0';
+      setScore(prevScore => prevScore + 1);
     } else {
-      newProgressColors[currentQuestionIndex] = '#EC7063';
+      newProgressColors[currentQuestionIndex] = '#6E6C6C';
     }
     setProgressColors(newProgressColors);
     incrementIndex();
