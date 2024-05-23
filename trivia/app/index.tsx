@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
-
+import DeviceInfo from 'react-native-device-info'
+import { getUniqueId } from 'react-native-device-info';
 
 const Index = () => {
   const navigate = useNavigation();
   const router = useRouter();
+  const [userToken, setUserToken] = useState<string | null>(null)
+  const [userLocation, setUserLocation] = useState<string | null>(null)
   
-  const handleStart = () => {
-    router.push("/trivia") 
+  const handleStart = async () => {
+    try {
+        // get unique id
+      let info = DeviceInfo.getUniqueId();
+      console.log("Device Info: ", info)      
+      
+      // register the device
+      // const response = await fetch('https://api.pactrivia.levarga.com/regDevice', {method: 'POST'})
+      // const json = await response.json();
+      // setUserToken(json.token)
+      // console.log(userToken);
+    }
+    catch (error) {
+      console.log(error)
+    }
+    
+    
+    // console.log("useToken: ", userToken)
+    // router.push("/trivia") 
   };
   return (
     <View style={styles.container}>

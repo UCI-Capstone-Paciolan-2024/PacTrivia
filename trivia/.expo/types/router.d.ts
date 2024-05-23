@@ -7,7 +7,7 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/_layout` | `/endpage` | `/trivia`;
+  type StaticRoutes = `/` | `/endpage` | `/trivia` | `/_layout`;
   // prettier-ignore
   type DynamicRoutes<T extends string> = never;
   // prettier-ignore

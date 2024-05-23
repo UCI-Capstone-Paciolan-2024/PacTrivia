@@ -152,9 +152,11 @@ const TriviaScreen = () => {
         <ProgressBar progressColors={progressColors} />
       </View>
       <View style={styles.content}>
-        <Text style={styles.question}>
-          {answerChoicesJson.data[currentQuestionIndex].question}
-        </Text>
+        <View style={styles.questionFormat}>
+          <Text style={styles.question}>
+            {answerChoicesJson.data[currentQuestionIndex].question}
+          </Text>
+        </View>
         <QuestionLayout
           choices={answerChoicesJson.data[currentQuestionIndex].answers}
           onButtonClick={(answer) => handleAnswerPress(answer.text)}
@@ -188,12 +190,19 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   question: {
-    fontSize: 24, 
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    // marginBottom: 10,
     color: '#333',
     textAlign: 'center',
+    minHeight: '40%'
+
   },
+  questionFormat: {
+    // flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center',
+  }
 });
 
 export default TriviaScreen;
