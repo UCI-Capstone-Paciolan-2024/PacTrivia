@@ -1,30 +1,66 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, useGlobalSearchParams } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import * as Animatable from 'react-native-animatable';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const EndPage = () => {
   const router = useRouter();
   const params = useGlobalSearchParams();
-  const score = params.score;
+  const score = Number(params.score);
 
   const handleRestart = () => {
     router.push('/');
   };
 
+  const getProgressColor = () => {
+    if (score <= 3) {
+      return 'red';
+    } else if (score <= 6) {
+      return 'orange';
+    } else {
+      return '#00A36C';
+    }
+  };
+
+  const getCongratulatoryMessage = () => {
+    if (score <= 3) {
+      return 'Better luck next time!';
+    } else if (score <= 6) {
+      return 'Good job! Keep improving.';
+    } else {
+      return 'Congratulations! You nailed it!';
+    }
+  };
+
+  const progressColor = getProgressColor();
+  const congratulatoryMessage = getCongratulatoryMessage();
+
   return (
-    <LinearGradient colors={['#f8f8f8', '#e0e0e0']} style={styles.container}>
-      <Animatable.View animation="fadeIn" duration={1000} style={styles.content}>
+    <View style={styles.container}>
+      <View style={styles.content}>
         <Text style={styles.title}>Trivia Over</Text>
-        <View style={styles.scoreContainer}>
-          <Text style={styles.scoreText}>{score}</Text>
+        <View style={styles.progressContainer}>
+          <AnimatedCircularProgress
+            size={200}
+            width={15}
+            fill={(score / 10) * 100}
+            tintColor={progressColor}
+            backgroundColor="#e6e6e6"
+            rotation={0}
+          >
+            {() => (
+              <View style={styles.scoreContainer}>
+                <Text style={styles.scoreText}>{score}/10</Text>
+              </View>
+            )}
+          </AnimatedCircularProgress>
         </View>
+        <Text style={styles.congratulatoryMessage}>{congratulatoryMessage}</Text>
         <TouchableOpacity style={styles.button} onPress={handleRestart}>
           <Text style={styles.buttonText}>Restart Quiz</Text>
         </TouchableOpacity>
-      </Animatable.View>
-    </LinearGradient>
+      </View>
+    </View>
   );
 };
 
@@ -33,6 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f8f8f8',
   },
   content: {
     alignItems: 'center',
@@ -40,7 +77,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 5,
@@ -53,28 +90,28 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
+  progressContainer: {
+    marginBottom: 20,
+  },
   scoreContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 100,
-    width: 200,
-    height: 200,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-    marginBottom: 40,
   },
   scoreText: {
-    fontSize: 96,
+    fontSize: 48,
     color: '#333',
     textAlign: 'center',
     fontWeight: 'bold',
   },
+  congratulatoryMessage: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
   button: {
-    backgroundColor: '#cc0000',
+    backgroundColor: '#6E6C6C',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 30,

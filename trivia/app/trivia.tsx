@@ -139,7 +139,7 @@ const TriviaScreen = () => {
       newProgressColors[currentQuestionIndex] = '#C0C0C0';
       setScore(prevScore => prevScore + 1);
     } else {
-      newProgressColors[currentQuestionIndex] = '#6E6C6C';
+      newProgressColors[currentQuestionIndex] = '#C0C0C0';
     }
     setProgressColors(newProgressColors);
     incrementIndex();
