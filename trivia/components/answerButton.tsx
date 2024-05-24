@@ -23,7 +23,7 @@ const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClic
     if (currentRef) {
       currentRef.pulse(200);
     }
-    console.log(index);
+    console.log("Index pushed: ", index);
   };
 
   return (

@@ -5,7 +5,6 @@ import { AnswerType } from '../app/trivia';
 import { QuestionLayoutProps } from '../app/trivia';
 
 const QuestionLayout: React.FC<QuestionLayoutProps> = ({ options, onButtonClick }) => {
-  console.log(options)
   return (
     <View style={styles.container}>
       {options ? options.map((choice, index) => (

@@ -6,7 +6,7 @@ const saveVariable = async (key: string, value: any) => {
       key: key, // Note: Do not use underscore("_") in key!
       data: value,
     });
-    console.log('Variable saved successfully: ', key);
+    // console.log('Variable saved successfully: ', key);
   } catch (error) {
     console.error('Failed to save variable:', error);
   }

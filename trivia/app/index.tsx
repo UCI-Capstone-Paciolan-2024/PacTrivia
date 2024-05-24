@@ -14,11 +14,11 @@ const Index = () => {
   const handleStart = async () => {
     try {
       // get unique id, if we do not have one
-      if (await getVariable == null) {
+      // this is our first time running the game
+      if (await getVariable('userToken') == null) {
         await registerDevice()   
       }
-      // start the session
-      else {
+        // we already have a token, we have played before
         // get user ID and location [latitude, longitude]
         const userToken = await getVariable('userToken')
         getLocation();
@@ -52,7 +52,6 @@ const Index = () => {
         catch (error) {
           console.log("Error when starting the session: ", error)
         }
-      }
     }
     catch (error) {
       console.log("Error when registering for device: ", error)

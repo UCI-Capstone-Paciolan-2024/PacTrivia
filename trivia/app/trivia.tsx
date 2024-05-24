@@ -32,8 +32,8 @@ const TriviaScreen = () => {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(Array(10).fill('#e0e0e0'));
   const [score, setScore] = useState(0);
-  const [userToken, setUserToken] = useState<string>()
-  const [checkAnswer, setCheckAnswer] = useState<Boolean>(false)
+  const [currentQuestion, setCurrentQuestion] = useState<string>("test")
+  const [currentOptions, setCurrentOptions] = useState<string[]>([""])
 
   const router = useRouter();
 
@@ -46,6 +46,9 @@ const TriviaScreen = () => {
   };
 
   const handleAnswerPress = async (answer_index: number) => {
+    const userToken = await getVariable('userToken')
+    console.log("Answer Chosen: ", currentOptions[answer_index])
+    let checkAnswer = false;
     try {
       const response = await fetch(`https://api.pactrivia.levarga.com/checkAnswer`, {
         method: 'POST',
@@ -59,12 +62,17 @@ const TriviaScreen = () => {
       });
       if (response.ok) {
         const responseData = await response.json()
-        // console.log("response data: ", responseData)
-        
-        if (responseData.question_score != 0) {
-          setCheckAnswer(true)
-          console.log("correct")
-        }
+        console.log("Res data: ", responseData.data)
+        console.log("answer correct: ", responseData.data.answer_correct)
+        console.log(typeof responseData.data.answer_correct)
+        // if (responseData.data.answer_correct) {
+        //   setCheckAnswer(true)
+        //   console.log("CheckAnswer: ", checkAnswer)
+        // }
+        checkAnswer = responseData.data.answer_correct;
+      }
+      else {
+        console.error("Answer response not okay! Default will be wrong")
       }
     }
     catch(error) {
@@ -89,10 +97,11 @@ const TriviaScreen = () => {
     getQuestion();
   };
 
-  const [currentQuestion, setCurrentQuestion] = useState<string | null>(null)
-  const [currentOptions, setCurrentOptions] = useState<string[]>([""])
+  
   
   const getQuestion = async () => {
+    const userToken = await getVariable('userToken')
+
     try {
       const response = await fetch(`https://api.pactrivia.levarga.com/getQuestion`, {
         method: 'POST',
@@ -107,7 +116,8 @@ const TriviaScreen = () => {
         const responseData = await response.json()
         setCurrentQuestion(responseData.data.question)
         setCurrentOptions(responseData.data.options)
-        console.log("Current Options: ", currentOptions)
+        console.log("Current Q: ", responseData.data.question)
+        // console.log("Current Options: ", currentOptions)
       }
     }
     catch(error) {
@@ -134,13 +144,15 @@ const TriviaScreen = () => {
 
         const token = await getVariable('userToken')
         if (token) {
-          setUserToken(token)
-          console.log("User Token: ", userToken)
+          console.log("User Token: ", token)
         }
     }
 
-    initGame();
-    getQuestion();
+    initGame().then(async () =>
+      {
+        await getQuestion();
+      }
+    );
   }, [])
 
   return (
