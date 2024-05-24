@@ -2,20 +2,18 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import AnswerButton from './answerButton';
 import { AnswerType } from '../app/trivia';
+import { QuestionLayoutProps } from '../app/trivia';
 
-interface QuestionLayoutProps {
-  choices: AnswerType[];
-  onButtonClick: (answer: AnswerType) => void;
-}
-
-const QuestionLayout: React.FC<QuestionLayoutProps> = ({ choices, onButtonClick }) => {
+const QuestionLayout: React.FC<QuestionLayoutProps> = ({ options, onButtonClick }) => {
+  console.log(options)
   return (
     <View style={styles.container}>
-      {choices.map((choice, index) => (
+      {options ? options.map((choice, index) => (
         <View key={index} style={styles.box}>
-          <AnswerButton choice={choice.text} index={index} onButtonClick={() => onButtonClick(choice)} />
+          <AnswerButton choice={choice} index={index} onButtonClick={() => onButtonClick(choice)} />
         </View>
-      ))}
+      )): null
+      }
     </View>
   );
 };

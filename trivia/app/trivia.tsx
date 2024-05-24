@@ -4,6 +4,7 @@ import QuestionLayout from '../components/questionLayout';
 import GameHeader from '../components/gameHeader';
 import { useNavigation, useRouter } from 'expo-router';
 import ProgressBar from '../components/progressBar';
+import getVariable from './storage/getItem';
 
 export interface AnswerChoice {
   question: string;
@@ -15,116 +16,27 @@ export interface AnswerType {
 }
 
 export interface QuestionLayoutProps {
-  data: AnswerChoice[];
+  options: string[];
+  onButtonClick: (answer: string) => void;
+}
+
+const defaultProp: QuestionLayoutProps = {
+  options: ["1", "2", "3", "4"],
+  onButtonClick: (answer: string) => {}
 }
 
 
 
-// example json potentially
-const answerChoicesJson:QuestionLayoutProps = {
-  data: [
-    {
-      question: "In which popular TV sitcom can a shirt featuring the UCI Anteaters mascot be spotted?",
-      answers: [
-        { text: 'Friends'},
-        { text: 'The Office'},
-        { text: 'Parks & Rec'},
-        { text: 'Big Bang Theory'},
-      ]
-    },
-    {
-      question: "Which of the movies below was filmed at UCI?",
-      answers: [
-        { text: 'Dawn of the Planet of the Apes'},
-        { text: 'Rise of the Planet of the Apes'},
-        { text: 'War for the Planet of the Apes'},
-        { text: 'Planet of the Apes'},
-      ]
-    },
-    {
-      question: "Which UCI building is named after the author of a famous series of science fiction novels?",
-      answers: [
-        { text: 'Frank Herbert Hall'},
-        { text: 'George R.R. Martin Center'},
-        { text: 'J.K. Rowling Library'},
-        { text: 'Isaac Asimov Science Hall'},
-      ]
-    },
-    {
-      question: "UCI was established in what year?",
-      answers: [
-        { text: '1965'},
-        { text: '1950'},
-        { text: '1975'},
-        { text: '1982'},
-      ]
-    },
-    {
-      question: "What unique sports team does UCI have?",
-      answers: [
-        { text: 'Quidditch'},
-        { text: 'Underwater Hockey'},
-        { text: 'Elephant Polo'},
-        { text: 'Camel Racing'},
-      ]
-    },
-    {
-      question: "Which famous actor is an alumnus of UCI?",
-      answers: [
-        { text: 'Jon Lovitz'},
-        { text: 'James Franco'},
-        { text: 'Steve Carell'},
-        { text: 'Brad Pitt'},
-      ]
-    },
-    {
-      question: "What is the name of the UCI mascot?",
-      answers: [
-        { text: 'Peter the Anteater'},
-        { text: 'Sammy the Slug'},
-        { text: 'Ollie the Otter'},
-        { text: 'Eddie the Eagle'},
-      ]
-    },
-    {
-      question: "UCI is particularly renowned for its research in which field?",
-      answers: [
-        { text: 'Coastal Ecology'},
-        { text: 'Quantum Physics'},
-        { text: 'Cognitive Sciences'},
-        { text: 'Medieval History'},
-      ]
-    },
-    {
-      question: "Which UCI faculty member won a Nobel Prize?",
-      answers: [
-        { text: 'Irwin Rose in Chemistry'},
-        { text: 'Frederick R' },
-        { text: 'Sherwood Rowland in Chemistry'},
-        { text: 'Elizabeth Blackburn in Medicine'},
-      ]
-    },
-    {
-      question: "What unique feature can be found at UCI's campus center?",
-      answers: [
-        { text: 'An underground concert hall'},
-        { text: 'A rooftop garden'},
-        { text: 'A wildlife sanctuary'},
-        { text: 'A decommissioned submarine'},
-      ]
-    }
-  ],  
-};
 const TriviaScreen = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(Array(10).fill('#e0e0e0'));
   const [score, setScore] = useState(0);
 
   const router = useRouter();
 
   const incrementIndex = () => {
-    const totalQuestions = answerChoicesJson.data.length;
     if (currentQuestionIndex === totalQuestions - 1) {
       router.replace({ pathname: '/endpage', params: { score: score + 1 } });
     } else {
@@ -133,7 +45,8 @@ const TriviaScreen = () => {
   };
 
   const handleAnswerPress = (answer: string) => {
-    const correctAnswer = answerChoicesJson.data[currentQuestionIndex].answers[0].text;
+    getQuestion();
+    const correctAnswer = "placeholder";
     let newProgressColors = [...progressColors];
     if (answer === correctAnswer) {
       newProgressColors[currentQuestionIndex] = '#C0C0C0';
@@ -145,21 +58,71 @@ const TriviaScreen = () => {
     incrementIndex();
   };
 
+  const [currentQuestion, setCurrentQuestion] = useState<string | null>(null)
+  const [currentOptions, setCurrentOptions] = useState<string[]>([""])
+  
+  const getQuestion = async () => {
+    const userToken = await getVariable('userToken')
+    try {
+      const response = await fetch(`https://api.pactrivia.levarga.com/getQuestion`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          "token": userToken,
+        }),
+      });
+      if (response.ok) {
+        const responseData = await response.json()
+        setCurrentQuestion(responseData.data.question)
+        setCurrentOptions(responseData.data.options)
+        console.log("Current Options: ", currentOptions)
+      }
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
+
+  const [homeTeam, setHomeTeam] = useState<string>("null")
+  const [awayTeam, setAwayTeam] = useState<string>("null")
+
+  useEffect(() => {
+    // sets teams for the game and total amount of questions
+    const initGame = async () => {
+        const teams = await getVariable('teams')
+        if (teams) {
+          setHomeTeam(teams[0])
+          setAwayTeam(teams[1])
+        }
+
+        const numQuestions = await getVariable('totalQs')
+        if (numQuestions) {
+          setTotalQuestions(numQuestions)
+        }
+    }
+
+    initGame();
+    getQuestion();
+  }, [])
+
   return (
     <View style={styles.container}>
-      <GameHeader HomeTeam='UC Irvine' AwayTeam='CSU Long Beach' />
+      
+      <GameHeader HomeTeam={homeTeam} AwayTeam={awayTeam} />
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
       </View>
       <View style={styles.content}>
         <View style={styles.questionFormat}>
           <Text style={styles.question}>
-            {answerChoicesJson.data[currentQuestionIndex].question}
+            {currentQuestion}
           </Text>
         </View>
         <QuestionLayout
-          choices={answerChoicesJson.data[currentQuestionIndex].answers}
-          onButtonClick={(answer) => handleAnswerPress(answer.text)}
+          options={currentOptions}
+          onButtonClick={(answer) => handleAnswerPress("2")}
         />
       </View>
     </View>

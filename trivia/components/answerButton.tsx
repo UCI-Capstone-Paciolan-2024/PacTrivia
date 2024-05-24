@@ -19,8 +19,9 @@ const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClic
   const buttonRef = useRef<Animatable.View & TouchableOpacity>(null);
 
   const handlePressIn = () => {
-    if (buttonRef.current) {
-      buttonRef.current.pulse(200);
+    const currentRef = buttonRef.current
+    if (currentRef) {
+      currentRef.pulse(200);
     }
     console.log(index);
   };

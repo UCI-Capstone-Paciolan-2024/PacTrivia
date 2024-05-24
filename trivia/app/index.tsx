@@ -1,34 +1,65 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
-import DeviceInfo from 'react-native-device-info'
-import { getUniqueId } from 'react-native-device-info';
+import { registerDevice } from '../services/device';
+import getVariable from './storage/getItem';
+import saveVariable from './storage/saveItem';
+import { getLocation } from '../components/getLocation';
+
 
 const Index = () => {
   const navigate = useNavigation();
   const router = useRouter();
-  const [userToken, setUserToken] = useState<string | null>(null)
-  const [userLocation, setUserLocation] = useState<string | null>(null)
-  
+
   const handleStart = async () => {
     try {
-        // get unique id
-      let info = DeviceInfo.getUniqueId();
-      console.log("Device Info: ", info)      
-      
-      // register the device
-      // const response = await fetch('https://api.pactrivia.levarga.com/regDevice', {method: 'POST'})
-      // const json = await response.json();
-      // setUserToken(json.token)
-      // console.log(userToken);
+      // get unique id, if we do not have one
+      if (await getVariable == null) {
+        await registerDevice()   
+      }
+      // start the session
+      else {
+        // get user ID and location [latitude, longitude]
+        const userToken = await getVariable('userToken')
+        getLocation();
+        const userLocation = await getVariable('location')
+
+        try {
+          console.log("start session")
+          const response = await fetch(`https://api.pactrivia.levarga.com/startSession`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              "token": userToken,
+              "userLocation": userLocation
+            }),
+          });
+
+          if (response.ok) {
+            const responseData = await response.json();
+            console.log("request success: ", responseData)
+            
+            // saving home team and away teams to display later
+            await saveVariable('teams', responseData.data.game.teams)
+
+            // save total number of questions
+            await saveVariable('totalQs', responseData.data.game.questions_per_session)
+            
+          }
+        }
+        catch (error) {
+          console.log("Error when starting the session: ", error)
+        }
+      }
     }
     catch (error) {
-      console.log(error)
+      console.log("Error when registering for device: ", error)
     }
     
-    
-    // console.log("useToken: ", userToken)
-    // router.push("/trivia") 
+    // start trivia page
+    router.push("/trivia") 
   };
   return (
     <View style={styles.container}>

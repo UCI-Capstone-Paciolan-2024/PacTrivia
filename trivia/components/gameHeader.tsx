@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 interface GameHeaderProps {
-  HomeTeam: string;
-  AwayTeam: string;
+  HomeTeam: string | null;
+  AwayTeam: string | null;
 }
 
 const GameHeader: React.FC<GameHeaderProps> = ({ HomeTeam, AwayTeam }) => {
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: '500',
+    margin: 10,
   },
   titleText: {
     flex: 2,
