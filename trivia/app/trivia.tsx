@@ -17,22 +17,23 @@ export interface AnswerType {
 
 export interface QuestionLayoutProps {
   options: string[];
-  onButtonClick: (answer: string) => void;
+  onButtonClick: (answer_index: number) => void;
 }
 
 const defaultProp: QuestionLayoutProps = {
   options: ["1", "2", "3", "4"],
-  onButtonClick: (answer: string) => {}
+  onButtonClick: (answer_index: number) => {}
 }
 
 
 
 const TriviaScreen = () => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(Array(10).fill('#e0e0e0'));
   const [score, setScore] = useState(0);
+  const [userToken, setUserToken] = useState<string>()
+  const [checkAnswer, setCheckAnswer] = useState<Boolean>(false)
 
   const router = useRouter();
 
@@ -44,25 +45,54 @@ const TriviaScreen = () => {
     }
   };
 
-  const handleAnswerPress = (answer: string) => {
-    getQuestion();
-    const correctAnswer = "placeholder";
+  const handleAnswerPress = async (answer_index: number) => {
+    try {
+      const response = await fetch(`https://api.pactrivia.levarga.com/checkAnswer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          "token": userToken,
+          "answer_index": answer_index
+        }),
+      });
+      if (response.ok) {
+        const responseData = await response.json()
+        // console.log("response data: ", responseData)
+        
+        if (responseData.question_score != 0) {
+          setCheckAnswer(true)
+          console.log("correct")
+        }
+      }
+    }
+    catch(error) {
+      console.log(error)
+    }
+
     let newProgressColors = [...progressColors];
-    if (answer === correctAnswer) {
-      newProgressColors[currentQuestionIndex] = '#C0C0C0';
+    if (checkAnswer) {
+      // newProgressColors[currentQuestionIndex] = '#C0C0C0';
+      newProgressColors[currentQuestionIndex] = '#21d127';
       setScore(prevScore => prevScore + 1);
     } else {
-      newProgressColors[currentQuestionIndex] = '#C0C0C0';
+      // newProgressColors[currentQuestionIndex] = '#C0C0C0';
+      newProgressColors[currentQuestionIndex] = '#d12121';
+
     }
+
     setProgressColors(newProgressColors);
     incrementIndex();
+    
+    // get new set of questions
+    getQuestion();
   };
 
   const [currentQuestion, setCurrentQuestion] = useState<string | null>(null)
   const [currentOptions, setCurrentOptions] = useState<string[]>([""])
   
   const getQuestion = async () => {
-    const userToken = await getVariable('userToken')
     try {
       const response = await fetch(`https://api.pactrivia.levarga.com/getQuestion`, {
         method: 'POST',
@@ -101,6 +131,12 @@ const TriviaScreen = () => {
         if (numQuestions) {
           setTotalQuestions(numQuestions)
         }
+
+        const token = await getVariable('userToken')
+        if (token) {
+          setUserToken(token)
+          console.log("User Token: ", userToken)
+        }
     }
 
     initGame();
@@ -122,7 +158,7 @@ const TriviaScreen = () => {
         </View>
         <QuestionLayout
           options={currentOptions}
-          onButtonClick={(answer) => handleAnswerPress("2")}
+          onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
         />
       </View>
     </View>
