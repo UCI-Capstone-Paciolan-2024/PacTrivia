@@ -42,7 +42,7 @@ const Index = () => {
             console.log("request success: ", responseData)
             
             // saving home team and away teams to display later
-            await saveVariable('teams', responseData.data.game.teams)
+            await saveVariable('teams', responseData.data.game.team_logos)
 
             // save total number of questions
             await saveVariable('totalQs', responseData.data.game.questions_per_session)

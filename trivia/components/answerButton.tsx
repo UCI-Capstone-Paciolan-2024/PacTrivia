@@ -1,6 +1,7 @@
 import * as Animatable from 'react-native-animatable';
 import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useRef } from 'react';
+import { AnswerButtonProps } from '../app/interfaces';
 
 const buttonColors = [
   '#AF7AC5',
@@ -9,11 +10,6 @@ const buttonColors = [
   '#64B5F6'
 ];
 
-interface AnswerButtonProps {
-  choice: string;
-  index: number;
-  onButtonClick: () => void;
-}
 
 const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClick }) => {
   const buttonRef = useRef<Animatable.View & TouchableOpacity>(null);

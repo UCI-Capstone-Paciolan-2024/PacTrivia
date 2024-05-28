@@ -5,27 +5,12 @@ import GameHeader from '../components/gameHeader';
 import { useNavigation, useRouter } from 'expo-router';
 import ProgressBar from '../components/progressBar';
 import getVariable from './storage/getItem';
-
-export interface AnswerChoice {
-  question: string;
-  answers: AnswerType[];
-}
-
-export interface AnswerType {
-  text: string;
-}
-
-export interface QuestionLayoutProps {
-  options: string[];
-  onButtonClick: (answer_index: number) => void;
-}
+import { QuestionLayoutProps } from './interfaces';
 
 const defaultProp: QuestionLayoutProps = {
   options: ["1", "2", "3", "4"],
   onButtonClick: (answer_index: number) => {}
 }
-
-
 
 const TriviaScreen = () => {
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
@@ -34,6 +19,8 @@ const TriviaScreen = () => {
   const [score, setScore] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState<string>("test")
   const [currentOptions, setCurrentOptions] = useState<string[]>([""])
+  const [homeTeam, setHomeTeam] = useState<string>("null")
+  const [awayTeam, setAwayTeam] = useState<string>("null")
 
   const router = useRouter();
 
@@ -45,6 +32,7 @@ const TriviaScreen = () => {
     }
   };
 
+  // after answer is clicked, check if it is correct
   const handleAnswerPress = async (answer_index: number) => {
     const userToken = await getVariable('userToken')
     console.log("Answer Chosen: ", currentOptions[answer_index])
@@ -65,10 +53,6 @@ const TriviaScreen = () => {
         console.log("Res data: ", responseData.data)
         console.log("answer correct: ", responseData.data.answer_correct)
         console.log(typeof responseData.data.answer_correct)
-        // if (responseData.data.answer_correct) {
-        //   setCheckAnswer(true)
-        //   console.log("CheckAnswer: ", checkAnswer)
-        // }
         checkAnswer = responseData.data.answer_correct;
       }
       else {
@@ -79,6 +63,7 @@ const TriviaScreen = () => {
       console.log(error)
     }
 
+    // handles progress bar color changes alongside end score for correct # questions
     let newProgressColors = [...progressColors];
     if (checkAnswer) {
       // newProgressColors[currentQuestionIndex] = '#C0C0C0';
@@ -98,7 +83,7 @@ const TriviaScreen = () => {
   };
 
   
-  
+  // requests a new question
   const getQuestion = async () => {
     const userToken = await getVariable('userToken')
 
@@ -125,9 +110,7 @@ const TriviaScreen = () => {
     }
   }
 
-  const [homeTeam, setHomeTeam] = useState<string>("null")
-  const [awayTeam, setAwayTeam] = useState<string>("null")
-
+  // runs when the screen is first rendered, sets up total number of questions, the team headers and the user token
   useEffect(() => {
     // sets teams for the game and total amount of questions
     const initGame = async () => {
@@ -170,7 +153,7 @@ const TriviaScreen = () => {
         </View>
         <QuestionLayout
           options={currentOptions}
-          onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
+          onButtonClick={(answer_index: number) => handleAnswerPress(answer_index)}
         />
       </View>
     </View>
