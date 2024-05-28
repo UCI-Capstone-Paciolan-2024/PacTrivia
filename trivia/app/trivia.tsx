@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Audio } from 'expo-av';
 import QuestionLayout from '../components/questionLayout';
 import GameHeader from '../components/gameHeader';
-import { useNavigation, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import ProgressBar from '../components/progressBar';
 import getVariable from './storage/getItem';
 
@@ -23,19 +24,53 @@ export interface QuestionLayoutProps {
 const defaultProp: QuestionLayoutProps = {
   options: ["1", "2", "3", "4"],
   onButtonClick: (answer_index: number) => {}
-}
-
-
+};
 
 const TriviaScreen = () => {
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(Array(10).fill('#e0e0e0'));
   const [score, setScore] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<string>("test")
-  const [currentOptions, setCurrentOptions] = useState<string[]>([""])
+  const [currentQuestion, setCurrentQuestion] = useState<string>("test");
+  const [currentOptions, setCurrentOptions] = useState<string[]>([""]);
+  
+  const [correctSound, setCorrectSound] = useState<Audio.Sound | null>(null);
+  const [incorrectSound, setIncorrectSound] = useState<Audio.Sound | null>(null);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const loadSounds = async () => {
+      try {
+        const correctSoundObject = new Audio.Sound();
+        const incorrectSoundObject = new Audio.Sound();
+        
+        await correctSoundObject.loadAsync(require('../assets/correct.mp3'));
+        await incorrectSoundObject.loadAsync(require('../assets/incorrect.mp3'));
+        
+        setCorrectSound(correctSoundObject);
+        setIncorrectSound(incorrectSoundObject);
+      } catch (error) {
+        console.error("Error loading sound files: ", error);
+      }
+    };
+
+    loadSounds();
+    return () => {
+      correctSound && correctSound.unloadAsync();
+      incorrectSound && incorrectSound.unloadAsync();
+    };
+  }, []);
+
+  const playSound = async (sound: Audio.Sound | null) => {
+    if (sound) {
+      try {
+        await sound.replayAsync();
+      } catch (error) {
+        console.error("Error playing sound: ", error);
+      }
+    }
+  };
 
   const incrementIndex = () => {
     if (currentQuestionIndex === totalQuestions - 1) {
@@ -46,8 +81,8 @@ const TriviaScreen = () => {
   };
 
   const handleAnswerPress = async (answer_index: number) => {
-    const userToken = await getVariable('userToken')
-    console.log("Answer Chosen: ", currentOptions[answer_index])
+    const userToken = await getVariable('userToken');
+    console.log("Answer Chosen: ", currentOptions[answer_index]);
     let checkAnswer = false;
     try {
       const response = await fetch(`https://api.pactrivia.levarga.com/checkAnswer`, {
@@ -61,33 +96,25 @@ const TriviaScreen = () => {
         }),
       });
       if (response.ok) {
-        const responseData = await response.json()
-        console.log("Res data: ", responseData.data)
-        console.log("answer correct: ", responseData.data.answer_correct)
-        console.log(typeof responseData.data.answer_correct)
-        // if (responseData.data.answer_correct) {
-        //   setCheckAnswer(true)
-        //   console.log("CheckAnswer: ", checkAnswer)
-        // }
+        const responseData = await response.json();
+        console.log("Res data: ", responseData.data);
+        console.log("answer correct: ", responseData.data.answer_correct);
         checkAnswer = responseData.data.answer_correct;
+      } else {
+        console.error("Answer response not okay! Default will be wrong");
       }
-      else {
-        console.error("Answer response not okay! Default will be wrong")
-      }
-    }
-    catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
 
     let newProgressColors = [...progressColors];
     if (checkAnswer) {
-      // newProgressColors[currentQuestionIndex] = '#C0C0C0';
       newProgressColors[currentQuestionIndex] = '#21d127';
       setScore(prevScore => prevScore + 1);
+      await playSound(correctSound);
     } else {
-      // newProgressColors[currentQuestionIndex] = '#C0C0C0';
       newProgressColors[currentQuestionIndex] = '#d12121';
-
+      await playSound(incorrectSound);
     }
 
     setProgressColors(newProgressColors);
@@ -97,10 +124,8 @@ const TriviaScreen = () => {
     getQuestion();
   };
 
-  
-  
   const getQuestion = async () => {
-    const userToken = await getVariable('userToken')
+    const userToken = await getVariable('userToken');
 
     try {
       const response = await fetch(`https://api.pactrivia.levarga.com/getQuestion`, {
@@ -113,51 +138,45 @@ const TriviaScreen = () => {
         }),
       });
       if (response.ok) {
-        const responseData = await response.json()
-        setCurrentQuestion(responseData.data.question)
-        setCurrentOptions(responseData.data.options)
-        console.log("Current Q: ", responseData.data.question)
-        // console.log("Current Options: ", currentOptions)
+        const responseData = await response.json();
+        setCurrentQuestion(responseData.data.question);
+        setCurrentOptions(responseData.data.options);
+        console.log("Current Q: ", responseData.data.question);
       }
+    } catch (error) {
+      console.log(error);
     }
-    catch(error) {
-      console.log(error)
-    }
-  }
+  };
 
-  const [homeTeam, setHomeTeam] = useState<string>("null")
-  const [awayTeam, setAwayTeam] = useState<string>("null")
+  const [homeTeam, setHomeTeam] = useState<string>("null");
+  const [awayTeam, setAwayTeam] = useState<string>("null");
 
   useEffect(() => {
-    // sets teams for the game and total amount of questions
     const initGame = async () => {
-        const teams = await getVariable('teams')
-        if (teams) {
-          setHomeTeam(teams[0])
-          setAwayTeam(teams[1])
-        }
-
-        const numQuestions = await getVariable('totalQs')
-        if (numQuestions) {
-          setTotalQuestions(numQuestions)
-        }
-
-        const token = await getVariable('userToken')
-        if (token) {
-          console.log("User Token: ", token)
-        }
-    }
-
-    initGame().then(async () =>
-      {
-        await getQuestion();
+      const teams = await getVariable('teams');
+      if (teams) {
+        setHomeTeam(teams[0]);
+        setAwayTeam(teams[1]);
       }
-    );
-  }, [])
+
+      const numQuestions = await getVariable('totalQs');
+      if (numQuestions) {
+        setTotalQuestions(numQuestions);
+      }
+
+      const token = await getVariable('userToken');
+      if (token) {
+        console.log("User Token: ", token);
+      }
+    };
+
+    initGame().then(async () => {
+      await getQuestion();
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
-      
       <GameHeader HomeTeam={homeTeam} AwayTeam={awayTeam} />
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
@@ -202,14 +221,11 @@ const styles = StyleSheet.create({
   question: {
     fontSize: 24,
     fontWeight: 'bold',
-    // marginBottom: 10,
     color: '#333',
     textAlign: 'center',
     minHeight: '40%'
-
   },
   questionFormat: {
-    // flex: 1,
     justifyContent: 'center', 
     alignItems: 'center',
   }
