@@ -64,7 +64,7 @@ const EndPage = () => {
           {congratulatoryMessage}
         </Text>
         <TouchableOpacity style={styles.button} onPress={handleRestart}>
-          <Text style={styles.buttonText}>Retry Quiz</Text>
+          <Text style={styles.buttonText}>Try Again</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNewQuestions}>
           <Text style={styles.buttonText}>New Questions</Text>
