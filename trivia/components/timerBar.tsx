@@ -5,19 +5,18 @@ import * as Progress from "react-native-progress";
 interface TimerBarProps {
   timer: number;
   maxTime: number;
-  disabled: boolean;
 }
 
-const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime, disabled }) => {
+const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime }) => {
   return (
-    <View style={[styles.timerBarContainer, {opacity: disabled ? 0 : 1}]}>
+    <View style={[styles.timerBarContainer]}>
       <Progress.Bar
         progress={timer / maxTime}
         width={250}
         height={10}
         borderWidth={0}
         borderRadius={10}
-        color={"#6998fd"}
+        color={"#5e87ff"}
       />
       <Text style={styles.timeBarText}>{Math.ceil(timer/1000)}s</Text>
     </View>
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
   timeBarText: {
     fontWeight: "bold",
     fontSize: 20,
-    color: "#6998fd",
+    color: "#5e87ff",
   }
 });
 
