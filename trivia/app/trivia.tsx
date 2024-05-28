@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     minHeight: "30%",
   },
   questionFormat: {
-    flex: 2,
+    flex: 3,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   },
   answerContainer: {
     marginTop: 30,
-    flex: 8,
+    flex: 7,
     width: "100%",
     justifyContent: "center",
   },
