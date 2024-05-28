@@ -15,6 +15,7 @@ import QuestionLayout from "../components/questionLayout";
 import GameHeader from "../components/gameHeader";
 import ProgressBar from "../components/progressBar";
 import TimerBar from "../components/timerBar";
+import saveVariable from './storage/saveItem';
 
 const TriviaScreen = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -41,6 +42,8 @@ const TriviaScreen = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [checkAnswer, setCheckAnswer] = useState<boolean | null>(null);
   const appState = useRef(AppState.currentState);
+
+  let numbericalScore: Number
 
   useEffect(() => {
     const loadSounds = async () => {
@@ -90,6 +93,7 @@ const TriviaScreen = () => {
     
   const incrementIndex = () => {
     if (currentQuestionIndex === totalQuestions - 1) {
+      saveVariable("numericalscore", numbericalScore)
       router.replace({ pathname: "/endpage", params: { score: scoreRef.current } });
     } else {
       setQuestionIndex(currentQuestionIndex + 1);
@@ -122,6 +126,9 @@ const TriviaScreen = () => {
         console.log("answer correct: ", responseData.data.answer_correct);
         console.log(typeof responseData.data.answer_correct);
         localCheckAnswer = responseData.data.answer_correct;
+
+        numbericalScore = responseData.data.subtotal;
+
         setCheckAnswer(responseData.data.answer_correct);
       } else {
         console.error("Answer response not okay! Default will be wrong");

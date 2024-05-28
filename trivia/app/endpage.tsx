@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import getVariable from "./storage/getItem";
 
 const EndPage = () => {
+  const [numericalScore, setNumericalScore] = useState<number>()
   const router = useRouter();
   const params = useGlobalSearchParams();
   const score = Number(params.score);
@@ -37,6 +39,17 @@ const EndPage = () => {
     }
   };
 
+  useEffect(() => {
+    const initEndScreen = async () => {
+      const numerical_score = await getVariable("numericalscore")
+      if (numerical_score) {
+        setNumericalScore(numerical_score)
+      }
+    }
+
+    initEndScreen();
+  })
+
   const progressColor = getProgressColor();
   const congratulatoryMessage = getCongratulatoryMessage();
 
@@ -61,8 +74,7 @@ const EndPage = () => {
           </AnimatedCircularProgress>
         </View>
         <Text style={styles.numericalScore}>
-          {/* TODO: calculate score and put it here */}
-          Score: 180
+          Score: {numericalScore}
         </Text>
         <Text style={styles.congratulatoryMessage}>
           {congratulatoryMessage}

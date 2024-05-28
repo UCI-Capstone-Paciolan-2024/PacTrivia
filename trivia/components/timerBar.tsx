@@ -17,7 +17,7 @@ const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime, disabled }) => {
         height={10}
         borderWidth={0}
         borderRadius={10}
-        color={"#5e87ff"}
+        color={"#4a77ff"}
       />
       <Text style={styles.timeBarText}>{Math.ceil(timer/1000)}s</Text>
     </View>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   timeBarText: {
     fontWeight: "bold",
     fontSize: 20,
-    color: "#5e87ff",
+    color: "#4a77ff",
   }
 });
 
