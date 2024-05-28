@@ -1,11 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import AnswerButton from './answerButton';
-<<<<<<< HEAD
 import { QuestionLayoutProps } from '../app/interfaces';
-=======
-import { QuestionLayoutProps } from '../app/trivia';
->>>>>>> 040983f520820f4bdd71f2fe9009280ac2cb8583
 
 const QuestionLayout: React.FC<QuestionLayoutProps> = ({ options, onButtonClick }) => {
   return (
