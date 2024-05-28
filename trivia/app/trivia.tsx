@@ -18,7 +18,7 @@ import TimerBar from "../components/timerBar";
 
 const TriviaScreen = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [questionLoading, setQuestionLoading] = useState(false);
+  const [questionLoading, setQuestionLoading] = useState(true);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(
@@ -33,7 +33,7 @@ const TriviaScreen = () => {
   const [correctSound, setCorrectSound] = useState<Audio.Sound | null>(null);
   const [incorrectSound, setIncorrectSound] = useState<Audio.Sound | null>(null);
   const [startGameSound, setStartGameSound] = useState<Audio.Sound | null>(null);
-  const [maxTime, setMaxTime] = useState<number>(6 * 1000);
+  const [maxTime, setMaxTime] = useState<number>(5 * 1000);
   const [timer, setTimer] = useState(maxTime);
   const [lastActiveTime, setLastActiveTime] = useState(Date.now());
 
@@ -286,7 +286,7 @@ const TriviaScreen = () => {
       </View>
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
-        <TimerBar timer={timer} maxTime={maxTime} disabled={questionLoading} />
+        {!questionLoading ?(<TimerBar timer={timer} maxTime={maxTime}/>) : null}
       </View>
       <View style={styles.content}>
         {questionLoading ? (
