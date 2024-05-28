@@ -76,6 +76,7 @@ const Index = () => {
             body: JSON.stringify({
               token: userToken,
               userLocation: userLocation,
+              retry: true,
             }),
           }
         );
@@ -85,7 +86,7 @@ const Index = () => {
           console.log("request success: ", responseData);
 
           // saving home team and away teams to display later
-          await saveVariable("teams", responseData.data.game.teams);
+          await saveVariable("teams", responseData.data.game.team_logos);
 
           // save total number of questions
           await saveVariable(
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     marginVertical: 8,
+    marginHorizontal: 20,
   },
   button: {
     backgroundColor: "red",

@@ -1,17 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { GameHeaderProps } from '../app/interfaces';
 
-interface GameHeaderProps {
-  HomeTeam: string | null;
-  AwayTeam: string | null;
-}
 
 const GameHeader: React.FC<GameHeaderProps> = ({ HomeTeam, AwayTeam }) => {
+  console.log("home team urL: ", HomeTeam)
+  console.log("away team urL: ", AwayTeam)
+
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.teamText}>{HomeTeam}</Text>
+      {/* <Text style={styles.teamText}>{HomeTeam}</Text> */}
+      <Image source={{uri: HomeTeam}}></Image>
       <Text style={styles.titleText}>PacTrivia</Text>
-      <Text style={styles.teamText}>{AwayTeam}</Text>
+      {/* <Text style={styles.teamText}>{AwayTeam}</Text> */}
+      <Image source={{uri: AwayTeam}}></Image>
+
     </View>
   );
 };

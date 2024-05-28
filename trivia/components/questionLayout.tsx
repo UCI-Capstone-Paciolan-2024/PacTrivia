@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import AnswerButton from './answerButton';
-import { AnswerType } from '../app/trivia';
+<<<<<<< HEAD
+import { QuestionLayoutProps } from '../app/interfaces';
+=======
 import { QuestionLayoutProps } from '../app/trivia';
+>>>>>>> 040983f520820f4bdd71f2fe9009280ac2cb8583
 
 const QuestionLayout: React.FC<QuestionLayoutProps> = ({ options, onButtonClick }) => {
   return (
@@ -20,18 +23,15 @@ const QuestionLayout: React.FC<QuestionLayoutProps> = ({ options, onButtonClick 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     alignItems: 'center',
-    padding: 10,
   },
   box: {
     width: '100%',
-    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
   },
 });
 

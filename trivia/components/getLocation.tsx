@@ -1,6 +1,5 @@
 import * as Location from "expo-location"
 import saveVariable from "../app/storage/saveItem";
-import getVariable from "../app/storage/getItem";
 
 export const getLocation = async () => {
     try {
