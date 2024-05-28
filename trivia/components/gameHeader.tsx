@@ -6,11 +6,9 @@ import { GameHeaderProps } from '../app/interfaces';
 const GameHeader: React.FC<GameHeaderProps> = ({ HomeTeam, AwayTeam }) => {
   return (
     <View style={styles.headerContainer}>
-      {/* <Text style={styles.teamText}>{HomeTeam}</Text> */}
-      <Image source={{uri: HomeTeam}}></Image>
+      <Image source={{uri: HomeTeam}} style={styles.teamImage}></Image>
       <Text style={styles.titleText}>PacTrivia</Text>
-      {/* <Text style={styles.teamText}>{AwayTeam}</Text> */}
-      <Image source={{uri: AwayTeam}}></Image>
+      <Image source={{uri: AwayTeam}} style={styles.teamImage}></Image>
 
     </View>
   );
@@ -46,6 +44,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
+  },
+  teamImage: {
+    width: 45,
+    height: 45,
+    marginLeft: 30,
+    marginRight: 30,
+
+    resizeMode: 'contain',
   },
 });
 
