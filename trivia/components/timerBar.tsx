@@ -1,5 +1,5 @@
-import React, { useEffect, useRef} from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import React from "react";
+import { View, StyleSheet, Text} from "react-native";
 import * as Progress from "react-native-progress";
 
 interface TimerBarProps {
@@ -16,18 +16,9 @@ const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime }) => {
         height={10}
         borderWidth={0}
         borderRadius={10}
+        color={"blue"}
       />
-      <Progress.Circle
-        progress={timer / maxTime}
-        size={30}
-        showsText={true}
-        formatText={() => `${Math.ceil(timer/1000)}s`}
-        textStyle={
-            { fontWeight: "bold", fontSize: 18}
-        }
-        borderWidth={0}
-        thickness={0}
-      />
+      <Text style={styles.timeBarText}>{Math.ceil(timer/1000)}s</Text>
     </View>
   );
 };
@@ -39,6 +30,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly"
   },
+  timeBarText: {
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "blue",
+  }
 });
 
 export default TimerBar;
