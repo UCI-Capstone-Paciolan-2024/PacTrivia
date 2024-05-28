@@ -25,7 +25,6 @@ const Index = () => {
         const userLocation = await getVariable('location')
 
         try {
-          console.log("start session")
           const response = await fetch(`https://api.pactrivia.levarga.com/startSession`, {
             method: 'POST',
             headers: {
@@ -34,7 +33,7 @@ const Index = () => {
             body: JSON.stringify({ 
               "token": userToken,
               "userLocation": userLocation,
-              "retry": true
+              "retry": false
             }),
           });
 
@@ -48,6 +47,10 @@ const Index = () => {
             // save total number of questions
             await saveVariable('totalQs', responseData.data.game.questions_per_session)
             
+          }
+
+          else {
+            console.log("response is not ok! can't start session")
           }
         }
         catch (error) {
