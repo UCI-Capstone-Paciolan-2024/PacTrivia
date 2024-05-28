@@ -133,13 +133,17 @@ const TriviaScreen = () => {
     // wait a little bit to allow player to process their answer choice result
     let newProgressColors = [...progressColors];
     if (localCheckAnswer) {
-      newProgressColors[currentQuestionIndex] = '#21d127';
+      newProgressColors[currentQuestionIndex] = '#56887d';
       setScore(prevScore => prevScore + 1);
       await playSound(correctSound);
     } else {
-      newProgressColors[currentQuestionIndex] = '#d12121';
+      newProgressColors[currentQuestionIndex] = '#cc6666';
       await playSound(incorrectSound);
     }
+
+    // indicate which question we are on
+    newProgressColors[currentQuestionIndex + 1] = '#6998fd';
+
 
     setTimeout(async () => {
       // handles progress bar color changes alongside end score for correct # questions
@@ -209,6 +213,10 @@ const TriviaScreen = () => {
       if (token) {
         console.log("User Token: ", token);
       }
+
+      let newProgressColors = [...progressColors];
+      newProgressColors[currentQuestionIndex] = '#6998fd';
+      setProgressColors(newProgressColors);
     };
 
     initGame().then(async () => {
@@ -220,7 +228,15 @@ const TriviaScreen = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
+    // time has ran out
     if (timer <= 0) {
+      // indicate which question we are on
+      let newProgressColors = [...progressColors];
+      newProgressColors[currentQuestionIndex + 1] = '#6998fd';
+      // sets questions that have timed out to be gray
+      newProgressColors[currentQuestionIndex] = '#9b9b9b';
+      setProgressColors(newProgressColors);
+
       incrementIndex();
       getQuestion();
     } else {
@@ -274,7 +290,7 @@ const TriviaScreen = () => {
       </View>
       <View style={styles.content}>
         {questionLoading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#6998fd" />
           ) : (
             <>
               <View style={styles.questionFormat}>
@@ -303,6 +319,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%", 
     height: "100%",
+  },
+  questionText: {
+    alignItems: "center"
   },
   gameHeader: {
     height: "10%", 
