@@ -18,7 +18,10 @@ const Index = () => {
   const router = useRouter();
 
   const [availableTeams, setAvailableTeams] = useState<string[]>([]);
-  const [selectedTeams, setSelectedTeams] = useState<string[]>(["", ""]);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([
+    "UC Irvine Anteaters",
+    "UCLA Bruins",
+  ]);
 
   useEffect(() => {
     // fetch all teams available
@@ -66,6 +69,19 @@ const Index = () => {
 
       try {
         console.log("start session");
+        // create a custom session using the dropdowns
+        const numQuestions = 10;
+        const currentDate = new Date();
+        const currentTimeInMillis = currentDate.getTime();
+        const newTimeInMillis = currentTimeInMillis + numQuestions * 30 * 1000;
+        const endDate = new Date(newTimeInMillis);
+        const override_game = {
+          start: new Date().toISOString(),
+          end: endDate.toISOString(),
+          teams: selectedTeams,
+          max_sessions: -1,
+          questions_per_session: numQuestions,
+        };
         const response = await fetch(
           `https://api.pactrivia.levarga.com/startSession`,
           {
@@ -77,6 +93,7 @@ const Index = () => {
               token: userToken,
               userLocation: userLocation,
               retry: true,
+              override_game: override_game,
             }),
           }
         );
