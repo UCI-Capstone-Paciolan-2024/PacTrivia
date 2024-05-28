@@ -33,7 +33,8 @@ const Index = () => {
             },
             body: JSON.stringify({ 
               "token": userToken,
-              "userLocation": userLocation
+              "userLocation": userLocation,
+              "retry": true
             }),
           });
 
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     marginVertical: 8,
+    marginHorizontal: 20,
   },
   button: {
     backgroundColor: 'red', 

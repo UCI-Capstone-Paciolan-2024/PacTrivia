@@ -33,8 +33,9 @@ const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClic
 
 const styles = StyleSheet.create({
   answerButton: {
-    width: '100%',
-    height: 100,
+    width: "100%",
+    height: "auto",
+    minHeight: 70,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'white',
+    fontSize: 18,
   },
 });
 
