@@ -262,10 +262,6 @@ const TriviaScreen = () => {
               onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
             />
         </View>
-        <QuestionLayout
-          options={currentOptions}
-          onButtonClick={(answer_index: number) => handleAnswerPress(answer_index)}
-        />
       </View>
     </SafeAreaView>
   );
@@ -312,7 +308,7 @@ const styles = StyleSheet.create({
     minHeight: "30%",
   },
   questionFormat: {
-    flex: 3,
+    flex: 2,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -322,7 +318,7 @@ const styles = StyleSheet.create({
   },
   answerContainer: {
     marginTop: 30,
-    flex: 7,
+    flex: 8,
     width: "100%",
     justifyContent: "center",
   },
