@@ -41,7 +41,7 @@ const EndPage = () => {
 
   const getProgressColor = () => {
     if (score <= 3) {
-      return "red";
+      return "#ff6454";
     } else if (score <= 6) {
       return "orange";
     } else {
