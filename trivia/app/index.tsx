@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { useNavigation, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { registerDevice } from "../services/device";
 import getVariable from "./storage/getItem";
 import saveVariable from "./storage/saveItem";
@@ -14,8 +14,11 @@ import { getLocation } from "../components/getLocation";
 import SelectionDropdown from "../components/selectionDropdown";
 
 const Index = () => {
-  const navigate = useNavigation();
   const router = useRouter();
+
+  const retryParameters: { retry?: number } = useLocalSearchParams();
+
+  console.log(retryParameters);
 
   const [availableTeams, setAvailableTeams] = useState<string[]>([]);
   const [selectedTeams, setSelectedTeams] = useState<string[]>([
@@ -82,6 +85,12 @@ const Index = () => {
           max_sessions: -1,
           questions_per_session: numQuestions,
         };
+
+        // determine if we want new questions or not
+        let retry = true;
+        if (retryParameters.retry && retryParameters.retry === 0) {
+          retry = false;
+        }
         const response = await fetch(
           `https://api.pactrivia.levarga.com/startSession`,
           {
@@ -92,7 +101,7 @@ const Index = () => {
             body: JSON.stringify({
               token: userToken,
               userLocation: userLocation,
-              retry: true,
+              retry: retry,
               override_game: override_game,
             }),
           }
