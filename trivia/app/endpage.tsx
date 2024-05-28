@@ -1,12 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter, useGlobalSearchParams } from "expo-router";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { Audio } from 'expo-av';
 
 const EndPage = () => {
   const router = useRouter();
   const params = useGlobalSearchParams();
   const score = Number(params.score);
+  const [endGameSound, setEndGameSound] = useState<Audio.Sound | null>(null);
+
+  useEffect(() => {
+    const loadEndGameSound = async () => {
+      try {
+        const soundObject = new Audio.Sound();
+        await soundObject.loadAsync(require('../assets/endGame.mp3')); 
+        setEndGameSound(soundObject);
+        await soundObject.playAsync();
+        console.log("End game sound played");
+      } catch (error) {
+        console.error("Error loading end game sound: ", error);
+      }
+    };
+
+    loadEndGameSound();
+
+    return () => {
+      endGameSound && endGameSound.unloadAsync();
+    };
+  }, []);
 
   const handleRestart = () => {
     router.push("/");
