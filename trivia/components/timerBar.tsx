@@ -1,5 +1,5 @@
 import React, { useEffect, useRef} from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet} from "react-native";
 import * as Progress from "react-native-progress";
 
 interface TimerBarProps {

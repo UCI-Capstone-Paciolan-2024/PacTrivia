@@ -254,6 +254,7 @@ const TriviaScreen = () => {
         <GameHeader HomeTeam={homeTeam} AwayTeam={awayTeam} />
       </View>
       <View style={styles.header}>
+        <Text style={styles.questionText}>Question {currentQuestionIndex + 1} / {totalQuestions}</Text>
         <ProgressBar progressColors={progressColors} />
         <TimerBar timer={timer} maxTime={maxTime} />
       </View>
@@ -286,6 +287,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%", 
     height: "100%",
+  },
+  questionText: {
+    alignItems: "center"
   },
   gameHeader: {
     height: "10%", 
