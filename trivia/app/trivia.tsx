@@ -267,12 +267,7 @@ const TriviaScreen = () => {
       </View>
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
-        {questionLoading ? (
-            <></>
-          ) : (
-            <TimerBar timer={timer} maxTime={maxTime} />
-          )
-        }
+        <TimerBar timer={timer} maxTime={maxTime} disabled={questionLoading} />
       </View>
       <View style={styles.content}>
         {questionLoading ? (
