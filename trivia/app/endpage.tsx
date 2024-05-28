@@ -60,6 +60,10 @@ const EndPage = () => {
             )}
           </AnimatedCircularProgress>
         </View>
+        <Text style={styles.numericalScore}>
+          {/* TODO: calculate score and put it here */}
+          Score: 180
+        </Text>
         <Text style={styles.congratulatoryMessage}>
           {congratulatoryMessage}
         </Text>
@@ -119,6 +123,13 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
     marginBottom: 30,
+  },
+  numericalScore: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#6E6C6C",
