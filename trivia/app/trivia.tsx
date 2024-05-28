@@ -1,28 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
-import QuestionLayout from '../components/questionLayout';
-import GameHeader from '../components/gameHeader';
 import { useRouter } from 'expo-router';
-import ProgressBar from '../components/progressBar';
 import getVariable from './storage/getItem';
 import React, { useState, useEffect, useRef } from "react";
 import {
+  StyleSheet,
+  AppState,
   View,
   Text,
-  StyleSheet,
-  TouchableOpacity,
-  Pressable,
-  Animated,
-  Button,
-  AppState,
 } from "react-native";
 import QuestionLayout from "../components/questionLayout";
 import GameHeader from "../components/gameHeader";
-import { useNavigation, useRouter } from "expo-router";
 import ProgressBar from "../components/progressBar";
 import TimerBar from "../components/timerBar";
-import getVariable from "./storage/getItem";
 
 export interface AnswerChoice {
   question: string;
@@ -50,9 +39,6 @@ const TriviaScreen = () => {
     Array(10).fill("#e0e0e0")
   );
   const [score, setScore] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<string>("test");
-  const [currentOptions, setCurrentOptions] = useState<string[]>([""]);
-  
   const [correctSound, setCorrectSound] = useState<Audio.Sound | null>(null);
   const [incorrectSound, setIncorrectSound] = useState<Audio.Sound | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<string>("test");
@@ -62,6 +48,9 @@ const TriviaScreen = () => {
   const [lastActiveTime, setLastActiveTime] = useState(Date.now());
 
   const router = useRouter();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [checkAnswer, setCheckAnswer] = useState(false);
+  const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     const loadSounds = async () => {
@@ -95,9 +84,6 @@ const TriviaScreen = () => {
       }
     }
   };
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [checkAnswer, setCheckAnswer] = useState(false);
-  const appState = useRef(AppState.currentState);
 
   const incrementIndex = () => {
     if (currentQuestionIndex === totalQuestions - 1) {
@@ -137,11 +123,7 @@ const TriviaScreen = () => {
         checkAnswer = responseData.data.answer_correct;
       } else {
         console.error("Answer response not okay! Default will be wrong");
-      } else {
-        console.error("Answer response not okay! Default will be wrong");
       }
-    } catch (error) {
-      console.log(error);
     } catch (error) {
       console.log(error);
     }
@@ -194,10 +176,7 @@ const TriviaScreen = () => {
       console.log(error);
     }
   };
-  };
 
-  const [homeTeam, setHomeTeam] = useState<string>("null");
-  const [awayTeam, setAwayTeam] = useState<string>("null");
   const [homeTeam, setHomeTeam] = useState<string>("null");
   const [awayTeam, setAwayTeam] = useState<string>("null");
 
@@ -334,4 +313,3 @@ const styles = StyleSheet.create({
 });
 
 export default TriviaScreen;
-
