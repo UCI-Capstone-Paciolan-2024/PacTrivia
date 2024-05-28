@@ -23,7 +23,7 @@ const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime }) => {
         showsText={true}
         formatText={() => `${Math.ceil(timer/1000)}s`}
         textStyle={
-            { fontWeight: "bold", fontSize: 20}
+            { fontWeight: "bold", fontSize: 18}
         }
         borderWidth={0}
         thickness={0}
