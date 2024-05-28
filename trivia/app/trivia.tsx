@@ -7,6 +7,7 @@ import {
   AppState,
   View,
   Text,
+  SafeAreaView,
 } from "react-native";
 import QuestionLayout from "../components/questionLayout";
 import GameHeader from "../components/gameHeader";
@@ -252,8 +253,10 @@ const TriviaScreen = () => {
   }, [lastActiveTime, timer]);
 
   return (
-    <View style={styles.container}>
-      <GameHeader HomeTeam={homeTeam} AwayTeam={awayTeam} />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.gameHeader}>
+        <GameHeader HomeTeam={homeTeam} AwayTeam={awayTeam} />
+      </View>
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
         <TimerBar timer={timer} maxTime={maxTime} />
@@ -262,12 +265,14 @@ const TriviaScreen = () => {
         <View style={styles.questionFormat}>
           <Text style={styles.question}>{currentQuestion}</Text>
         </View>
-        <QuestionLayout
-          options={currentOptions}
-          onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
-        />
+        <View style={styles.answerContainer}>
+          <QuestionLayout
+              options={currentOptions}
+              onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
+            />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -276,12 +281,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f8f8",
     alignItems: "center",
+    width: "100%", 
+    height: "100%",
+  },
+  gameHeader: {
+    height: "10%", 
   },
   header: {
+    height: "10%",
     width: "90%",
     marginVertical: 20,
+    flexDirection: "column",
+    justifyContent: "space-around"
   },
   content: {
+    flex: 1,
+    height: "80%", 
     padding: 20,
     alignItems: "center",
     width: "90%",
@@ -294,21 +309,27 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   question: {
-    fontSize: 24,
+    fontSize: 20,
+    height: "auto",
     fontWeight: "bold",
-    // marginBottom: 10,
     color: "#333",
     textAlign: "center",
-    minHeight: "40%",
+    minHeight: "30%",
   },
   questionFormat: {
-    // flex: 1,
+    flex: 2,
     justifyContent: "center",
     alignItems: "center",
   },
   timer: {
     fontSize: 24,
     textAlign: "center",
+  },
+  answerContainer: {
+    marginTop: 30,
+    flex: 8,
+    width: "100%",
+    justifyContent: "center",
   },
 });
 
