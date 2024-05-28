@@ -22,13 +22,16 @@ const defaultProp: QuestionLayoutProps = {
 };
 
 const TriviaScreen = () => {
-  const [loading, setLoading] = useState(false);
+
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [questionLoading, setQuestionLoading] = useState(false);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(
     Array(10).fill("#e0e0e0")
   );
   const [score, setScore] = useState(0);
+  const scoreRef = useRef(score);
   const [currentQuestion, setCurrentQuestion] = useState<string>("test")
   const [currentOptions, setCurrentOptions] = useState<string[]>([""])
   const [homeTeam, setHomeTeam] = useState<string>("null")
@@ -41,7 +44,7 @@ const TriviaScreen = () => {
 
   const router = useRouter();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [checkAnswer, setCheckAnswer] = useState(false);
+  const [checkAnswer, setCheckAnswer] = useState<boolean | null>(null);
   const appState = useRef(AppState.currentState);
 
   useEffect(() => {
@@ -67,6 +70,11 @@ const TriviaScreen = () => {
     };
   }, []);
 
+
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score])
+
   const playSound = async (sound: Audio.Sound | null) => {
     if (sound) {
       try {
@@ -76,10 +84,10 @@ const TriviaScreen = () => {
       }
     }
   };
-
+    
   const incrementIndex = () => {
     if (currentQuestionIndex === totalQuestions - 1) {
-      router.replace({ pathname: "/endpage", params: { score: score + 1 } });
+      router.replace({ pathname: "/endpage", params: { score: scoreRef.current } });
     } else {
       setQuestionIndex(currentQuestionIndex + 1);
     }
@@ -87,9 +95,10 @@ const TriviaScreen = () => {
 
   // after answer is clicked, check if it is correct
   const handleAnswerPress = async (answer_index: number) => {
+    setSelectedAnswer(answer_index);
     const userToken = await getVariable("userToken");
     console.log("Answer Chosen: ", currentOptions[answer_index]);
-    let checkAnswer = false;
+    let localCheckAnswer = false;
     try {
       const response = await fetch(
         `https://api.pactrivia.levarga.com/checkAnswer`,
@@ -109,11 +118,8 @@ const TriviaScreen = () => {
         console.log("Res data: ", responseData.data);
         console.log("answer correct: ", responseData.data.answer_correct);
         console.log(typeof responseData.data.answer_correct);
-        // if (responseData.data.answer_correct) {
-        //   setCheckAnswer(true)
-        //   console.log("CheckAnswer: ", checkAnswer)
-        // }
-        checkAnswer = responseData.data.answer_correct;
+        localCheckAnswer = responseData.data.answer_correct;
+        setCheckAnswer(responseData.data.answer_correct);
       } else {
         console.error("Answer response not okay! Default will be wrong");
       }
@@ -121,9 +127,9 @@ const TriviaScreen = () => {
       console.log(error);
     }
 
-    // handles progress bar color changes alongside end score for correct # questions
+    // wait a little bit to allow player to process their answer choice result
     let newProgressColors = [...progressColors];
-    if (checkAnswer) {
+    if (localCheckAnswer) {
       newProgressColors[currentQuestionIndex] = '#21d127';
       setScore(prevScore => prevScore + 1);
       await playSound(correctSound);
@@ -132,15 +138,21 @@ const TriviaScreen = () => {
       await playSound(incorrectSound);
     }
 
-    setProgressColors(newProgressColors);
-    incrementIndex();
-
-    // get new set of questions
-    getQuestion();
+    setTimeout(async () => {
+      // handles progress bar color changes alongside end score for correct # questions
+      
+      setProgressColors(newProgressColors);
+      incrementIndex();
+      
+      // get new set of questions and reset states associated with new questions
+      setSelectedAnswer(null);
+      setCheckAnswer(null);
+      getQuestion();
+    }, 1000);
   };
 
   const getQuestion = async () => {
-    setLoading(true);
+    setQuestionLoading(true);
     const userToken = await getVariable("userToken");
 
     try {
@@ -170,7 +182,7 @@ const TriviaScreen = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      setQuestionLoading(false);
     }
   };
 
@@ -255,10 +267,15 @@ const TriviaScreen = () => {
       </View>
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
-        <TimerBar timer={timer} maxTime={maxTime} />
+        {questionLoading ? (
+            <></>
+          ) : (
+            <TimerBar timer={timer} maxTime={maxTime} />
+          )
+        }
       </View>
       <View style={styles.content}>
-        {loading ? (
+        {questionLoading ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
             <>
@@ -268,6 +285,8 @@ const TriviaScreen = () => {
               <View style={styles.answerContainer}>
                 <QuestionLayout
                     options={currentOptions}
+                    selectedAnswer={selectedAnswer}
+                    checkAnswer={checkAnswer}
                     onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
                   />
               </View>

@@ -10,8 +10,23 @@ const buttonColors = [
   '#64B5F6'
 ];
 
+const greyedOutColor = '#d3d3d3'; // Greyed out color
+const correctAnswerColor = '#4CAF50'; // Green color for correct answer
+const wrongAnswerColor = '#FF0000'; // red color for wrong answer
 
-const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClick }) => {
+const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClick, disabled, greyedOut, checkAnswer }) => {
+  const getBackgroundColor = () => {
+    if (greyedOut) {
+      return greyedOutColor;
+    }
+    if (checkAnswer) {
+      return correctAnswerColor;
+    }else if (checkAnswer != null && !checkAnswer) {
+      return wrongAnswerColor;
+    }
+    return buttonColors[index];
+  };
+
   const buttonRef = useRef<Animatable.View & TouchableOpacity>(null);
 
   const handlePressIn = () => {
@@ -23,8 +38,13 @@ const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClic
   };
 
   return (
-    <Animatable.View ref={buttonRef} style={[styles.answerButton, { backgroundColor: buttonColors[index] }]}>
-      <TouchableOpacity onPressIn={() => { handlePressIn(); onButtonClick(); }} style={styles.fullSize}>
+    <Animatable.View ref={buttonRef} style={[styles.answerButton, 
+        { backgroundColor: getBackgroundColor() }]}>
+      <TouchableOpacity 
+        onPressIn={() => { handlePressIn(); onButtonClick(); }} 
+        style={styles.fullSize}
+        disabled={disabled}
+      >
         <Text style={styles.answerText}>{choice}</Text>
       </TouchableOpacity>
     </Animatable.View>
