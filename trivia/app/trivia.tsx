@@ -9,6 +9,7 @@ import {
   View,
   Text,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import QuestionLayout from "../components/questionLayout";
 import GameHeader from "../components/gameHeader";
@@ -21,6 +22,7 @@ const defaultProp: QuestionLayoutProps = {
 };
 
 const TriviaScreen = () => {
+  const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [progressColors, setProgressColors] = useState<string[]>(
@@ -138,6 +140,7 @@ const TriviaScreen = () => {
   };
 
   const getQuestion = async () => {
+    setLoading(true);
     const userToken = await getVariable("userToken");
 
     try {
@@ -166,6 +169,8 @@ const TriviaScreen = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -253,15 +258,22 @@ const TriviaScreen = () => {
         <TimerBar timer={timer} maxTime={maxTime} />
       </View>
       <View style={styles.content}>
-        <View style={styles.questionFormat}>
-          <Text style={styles.question}>{currentQuestion}</Text>
-        </View>
-        <View style={styles.answerContainer}>
-          <QuestionLayout
-              options={currentOptions}
-              onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
-            />
-        </View>
+        {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <View style={styles.questionFormat}>
+                <Text style={styles.question}>{currentQuestion}</Text>
+              </View>
+              <View style={styles.answerContainer}>
+                <QuestionLayout
+                    options={currentOptions}
+                    onButtonClick={(answer_index) => handleAnswerPress(answer_index)}
+                  />
+              </View>
+            </>
+          )
+        }
       </View>
     </SafeAreaView>
   );
