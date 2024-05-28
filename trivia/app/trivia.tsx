@@ -175,6 +175,7 @@ const TriviaScreen = () => {
     const initGame = async () => {
       const teams = await getVariable("teams");
       if (teams) {
+        console.log("teams: ", teams)
         setHomeTeam(teams[0]);
         setAwayTeam(teams[1]);
       }

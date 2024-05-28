@@ -4,9 +4,6 @@ import { GameHeaderProps } from '../app/interfaces';
 
 
 const GameHeader: React.FC<GameHeaderProps> = ({ HomeTeam, AwayTeam }) => {
-  console.log("home team urL: ", HomeTeam)
-  console.log("away team urL: ", AwayTeam)
-
   return (
     <View style={styles.headerContainer}>
       {/* <Text style={styles.teamText}>{HomeTeam}</Text> */}
