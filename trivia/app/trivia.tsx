@@ -16,13 +16,7 @@ import GameHeader from "../components/gameHeader";
 import ProgressBar from "../components/progressBar";
 import TimerBar from "../components/timerBar";
 
-// const defaultProp: QuestionLayoutProps = {
-//   options: ["1", "2", "3", "4"],
-//   onButtonClick: (answer_index: number) => { },
-// };
-
 const TriviaScreen = () => {
-
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [questionLoading, setQuestionLoading] = useState(false);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
@@ -32,12 +26,13 @@ const TriviaScreen = () => {
   );
   const [score, setScore] = useState(0);
   const scoreRef = useRef(score);
-  const [currentQuestion, setCurrentQuestion] = useState<string>("test")
-  const [currentOptions, setCurrentOptions] = useState<string[]>([""])
-  const [homeTeam, setHomeTeam] = useState<string>("null")
-  const [awayTeam, setAwayTeam] = useState<string>("null")
+  const [currentQuestion, setCurrentQuestion] = useState<string>("test");
+  const [currentOptions, setCurrentOptions] = useState<string[]>([""]);
+  const [homeTeam, setHomeTeam] = useState<string>("null");
+  const [awayTeam, setAwayTeam] = useState<string>("null");
   const [correctSound, setCorrectSound] = useState<Audio.Sound | null>(null);
   const [incorrectSound, setIncorrectSound] = useState<Audio.Sound | null>(null);
+  const [startGameSound, setStartGameSound] = useState<Audio.Sound | null>(null);
   const [maxTime, setMaxTime] = useState<number>(6 * 1000);
   const [timer, setTimer] = useState(maxTime);
   const [lastActiveTime, setLastActiveTime] = useState(Date.now());
@@ -52,28 +47,36 @@ const TriviaScreen = () => {
       try {
         const correctSoundObject = new Audio.Sound();
         const incorrectSoundObject = new Audio.Sound();
-        
+        const startGameSoundObject = new Audio.Sound();
+
         await correctSoundObject.loadAsync(require('../assets/correct.mp3'));
         await incorrectSoundObject.loadAsync(require('../assets/incorrect.mp3'));
-        
+        await startGameSoundObject.loadAsync(require('../assets/startGame.mp3'));
+
         setCorrectSound(correctSoundObject);
         setIncorrectSound(incorrectSoundObject);
+        setStartGameSound(startGameSoundObject);
+
+
+        await startGameSoundObject.playAsync();
+        console.log("Start game sound played");
       } catch (error) {
         console.error("Error loading sound files: ", error);
       }
     };
 
     loadSounds();
+
     return () => {
       correctSound && correctSound.unloadAsync();
       incorrectSound && incorrectSound.unloadAsync();
+      startGameSound && startGameSound.unloadAsync();
     };
   }, []);
 
-
   useEffect(() => {
     scoreRef.current = score;
-  }, [score])
+  }, [score]);
 
   const playSound = async (sound: Audio.Sound | null) => {
     if (sound) {
@@ -370,3 +373,5 @@ const styles = StyleSheet.create({
 });
 
 export default TriviaScreen;
+
+
