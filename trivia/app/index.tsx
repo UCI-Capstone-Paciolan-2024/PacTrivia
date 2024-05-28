@@ -33,7 +33,8 @@ const Index = () => {
             },
             body: JSON.stringify({ 
               "token": userToken,
-              "userLocation": userLocation
+              "userLocation": userLocation,
+              "retry": true
             }),
           });
 
