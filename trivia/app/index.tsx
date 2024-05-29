@@ -124,7 +124,7 @@ const Index = () => {
         } else {
           const responseData = await response.json();
           console.log(responseData.error);
-          if (responseData.error.type === "NoMoreQuestionsError") {
+          if (responseData.error.type === "NoMoreQuestionsError" || responseData.error.type === "NoValidSessionError") {
             await saveVariable("userToken", null);
             await handleStart();
           }
