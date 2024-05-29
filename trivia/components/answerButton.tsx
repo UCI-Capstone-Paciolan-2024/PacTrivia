@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   answerButton: {
     width: "100%",
     height: "auto",
-    minHeight: 95,
+    // minHeight: 95,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
