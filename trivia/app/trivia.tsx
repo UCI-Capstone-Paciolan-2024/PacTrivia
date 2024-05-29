@@ -16,6 +16,7 @@ import GameHeader from "../components/gameHeader";
 import ProgressBar from "../components/progressBar";
 import TimerBar from "../components/timerBar";
 import saveVariable from './storage/saveItem';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const TriviaScreen = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -37,6 +38,8 @@ const TriviaScreen = () => {
   const [maxTime, setMaxTime] = useState<number>(5 * 1000);
   const [timer, setTimer] = useState(maxTime);
   const [lastActiveTime, setLastActiveTime] = useState(Date.now());
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+ 
 
   const router = useRouter();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -206,6 +209,11 @@ const TriviaScreen = () => {
   // runs when the screen is first rendered, sets up total number of questions, the team headers and the user token
   useEffect(() => {
     const initGame = async () => {
+      await getVariable("darkMode").then((darkMode) => {
+        if (darkMode) {
+          setDarkMode(true);
+        }
+      });
       const teams = await getVariable("teams");
       if (teams) {
         console.log("teams: ", teams)
@@ -289,7 +297,7 @@ const TriviaScreen = () => {
   }, [lastActiveTime, timer]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, darkMode ? {backgroundColor: "#282828"} : {backgroundColor: "#f8f8f8"}]}>
       <View style={styles.gameHeader}>
         <GameHeader HomeTeam={homeTeam} AwayTeam={awayTeam} />
       </View>
@@ -297,13 +305,13 @@ const TriviaScreen = () => {
         <ProgressBar progressColors={progressColors} />
         <TimerBar timer={timer} maxTime={maxTime} disabled={questionLoading}/>
       </View>
-      <View style={styles.content}>
+      <View style={[styles.content, darkMode ? {backgroundColor:  "#121212"} : {backgroundColor: "white"}]}>
         {questionLoading ? (
             <ActivityIndicator size="large" color="#789aff" />
           ) : (
             <>
               <View style={styles.questionFormat}>
-                <Text style={styles.question}>{currentQuestion}</Text>
+                <Text style={[styles.question, darkMode ? {color: "white"} : {color: "#333"}]}>{currentQuestion}</Text>
               </View>
               <View style={styles.answerContainer}>
                 <QuestionLayout
@@ -319,7 +327,7 @@ const TriviaScreen = () => {
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

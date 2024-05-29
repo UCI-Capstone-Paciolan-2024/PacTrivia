@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  Switch,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { registerDevice } from "../services/device";
@@ -19,6 +20,27 @@ const Index = () => {
   const retryParameters: { retry?: number } = useLocalSearchParams();
 
   console.log(retryParameters);
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = async () => {
+    setIsDarkMode(previousState => !previousState);
+    await saveVariable("darkMode", !isDarkMode);
+  }
+
+  const fetchDarkModeValue = async () => {
+    const value = await getVariable("darkMode");
+    if (value !== null) {
+      setIsDarkMode(value);
+    } else {
+      setIsDarkMode(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDarkModeValue();
+  }, []);
+    
 
   const [availableTeams, setAvailableTeams] = useState<string[]>([]);
   const [selectedTeams, setSelectedTeams] = useState<string[]>([
@@ -86,12 +108,6 @@ const Index = () => {
           questions_per_session: numQuestions,
         };
 
-        // determine if we want new questions or not
-        let retry = false;
-        if (!retryParameters.retry || retryParameters.retry === 0) {
-          retry = true;
-        }
-        console.log("retry value:", retry);
         console.log("override_game: ", override_game);
         const response = await fetch(
           `https://api.pactrivia.levarga.com/startSession`,
@@ -103,7 +119,6 @@ const Index = () => {
             body: JSON.stringify({
               token: userToken,
               userLocation: userLocation,
-              retry: retry,
               override_game: override_game,
             }),
           }
@@ -141,6 +156,16 @@ const Index = () => {
   };
   return (
     <View style={styles.container}>
+      <View style={styles.darkmodeToggle}>
+        <Text style={{ color: "white", padding: 10   }}>Dark Mode</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#555555" }}
+          onValueChange={toggleDarkMode}
+          // @ts-expect-error
+          activeThumbColor={"white"}
+          value={isDarkMode}
+        />
+      </View>
       <Text style={styles.title}>PacTrivia</Text>
       <Text style={styles.description}>
         Answer questions correctly for a chance to win cool perks
@@ -178,6 +203,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#262626",
     alignItems: "center",
     justifyContent: "center",
+  },
+  darkmodeToggle: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,

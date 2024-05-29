@@ -10,8 +10,21 @@ const EndPage = () => {
   const params = useGlobalSearchParams();
   const score = Number(params.score);
   const [endGameSound, setEndGameSound] = useState<Audio.Sound | null>(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
+    const fetchDarkModeValue = async () => {
+      await getVariable("darkMode").then((value) => { 
+        if (value !== null) {
+          setDarkMode(value);
+        } else {
+          setDarkMode(false);
+        }
+      });
+    }
+    
+    fetchDarkModeValue();
+
     const loadEndGameSound = async () => {
       try {
         const soundObject = new Audio.Sound();
@@ -64,9 +77,9 @@ const EndPage = () => {
   const congratulatoryMessage = getCongratulatoryMessage();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Trivia Over</Text>
+    <View style={[styles.container, darkMode ? {backgroundColor: "#282828"} : {backgroundColor: "#f8f8f8"}]}>
+      <View style={[styles.content, darkMode ? {backgroundColor: "#121212"} : {backgroundColor: "white"}]}>
+        <Text style={[styles.title, darkMode ? {color: "white"} : {color: "#333"}]}>Trivia Over</Text>
         <View style={styles.progressContainer}>
           <AnimatedCircularProgress
             size={200}
@@ -78,12 +91,12 @@ const EndPage = () => {
           >
             {() => (
               <View style={styles.scoreContainer}>
-                <Text style={styles.scoreText}>{score}/10</Text>
+                <Text style={[styles.scoreText, darkMode ? {color: "white"} : {color: "#333"}]}>{score}/10</Text>
               </View>
             )}
           </AnimatedCircularProgress>
         </View>
-        <Text style={styles.congratulatoryMessage}>
+        <Text style={[styles.congratulatoryMessage, darkMode ? {color: "white"} : {color: "#333"}]}>
           {congratulatoryMessage}
         </Text>
         {/* <TouchableOpacity style={styles.button} onPress={handleRestart}>
