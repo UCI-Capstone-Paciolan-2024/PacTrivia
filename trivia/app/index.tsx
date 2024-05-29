@@ -121,7 +121,7 @@ const Index = () => {
             "totalQs",
             responseData.data.game.questions_per_session
           );
-        }else{
+        } else {
           const responseData = await response.json();
           console.log(responseData.error);
           if (responseData.error.type === "NoMoreQuestionsError") {
@@ -145,6 +145,7 @@ const Index = () => {
       <Text style={styles.description}>
         Answer questions correctly for a chance to win cool perks
       </Text>
+      <Text style={styles.title}>Configure Teams</Text>
       <SelectionDropdown
         options={availableTeams}
         onSelection={(selection) => {
