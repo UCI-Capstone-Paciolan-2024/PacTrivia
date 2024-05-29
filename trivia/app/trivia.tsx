@@ -135,7 +135,7 @@ const TriviaScreen = () => {
         setCheckAnswer(responseData.data.answer_correct);
       } else throw responseData.error
     } catch (error: any) {
-      Alert.alert(error.type, error.message)
+      Alert.alert("Failed to check answer", error.message)
       console.error("Answer response not okay! Default will be wrong");
       console.log(error);
     }
@@ -194,7 +194,7 @@ const TriviaScreen = () => {
         setTimer(timeout);
         console.log("Current Q: ", responseData.data.question);
         setQuestionLoading(false);
-      } else throw responseData.json
+      } else throw responseData.error
     } catch (error: any) {
       if (currentQuestionIndex !== totalQuestions - 1) {
         setTimer(maxTime);
@@ -364,12 +364,11 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   question: {
-    fontSize: 20,
+    fontSize: 22,
     height: "auto",
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
-    minHeight: "30%",
   },
   questionFormat: {
     flex: 2,
@@ -381,7 +380,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   answerContainer: {
-    marginTop: 30,
+    marginTop: 10,
     flex: 8,
     width: "100%",
     justifyContent: "center",
