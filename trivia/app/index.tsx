@@ -124,6 +124,10 @@ const Index = () => {
         } else {
           const responseData = await response.json();
           console.log(responseData.error);
+          if (responseData.error.type === "NoMoreQuestionsError") {
+            await saveVariable("userToken", null);
+            await handleStart();
+          }
         }
       } catch (error) {
         console.log("Error when starting the session: ", error);
