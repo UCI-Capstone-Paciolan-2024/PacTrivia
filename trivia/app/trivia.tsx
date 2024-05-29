@@ -192,6 +192,8 @@ const TriviaScreen = () => {
         console.log("Current Q: ", responseData.data.question);
       } else {
         setTimer(maxTime);
+        const responseData = await response.json();
+        console.log(responseData.error);
       }
     } catch (error) {
       console.log(error);
@@ -293,7 +295,7 @@ const TriviaScreen = () => {
       </View>
       <View style={styles.header}>
         <ProgressBar progressColors={progressColors} />
-        {!questionLoading ?(<TimerBar timer={timer} maxTime={maxTime}/>) : null}
+        <TimerBar timer={timer} maxTime={maxTime} disabled={questionLoading}/>
       </View>
       <View style={styles.content}>
         {questionLoading ? (

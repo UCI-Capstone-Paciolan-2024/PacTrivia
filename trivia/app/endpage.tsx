@@ -6,7 +6,7 @@ import getVariable from "./storage/getItem";
 import { Audio } from 'expo-av';
 
 const EndPage = () => {
-  const [numericalScore, setNumericalScore] = useState<number>()
+  const [numericalScore, setNumericalScore] = useState<number>();
   const router = useRouter();
   const params = useGlobalSearchParams();
   const score = Number(params.score);
@@ -63,9 +63,9 @@ const EndPage = () => {
 
   useEffect(() => {
     const initEndScreen = async () => {
-      const numerical_score = await getVariable("numericalscore")
+      const numerical_score = await getVariable("numericalscore");
       if (numerical_score) {
-        setNumericalScore(numerical_score)
+        setNumericalScore(numerical_score);
       }
     }
 

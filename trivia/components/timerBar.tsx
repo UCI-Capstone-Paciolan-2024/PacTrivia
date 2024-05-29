@@ -5,11 +5,12 @@ import * as Progress from "react-native-progress";
 interface TimerBarProps {
   timer: number;
   maxTime: number;
+  disabled: boolean;
 }
 
-const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime }) => {
+const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime, disabled }) => {
   return (
-    <View style={[styles.timerBarContainer]}>
+    <View style={[styles.timerBarContainer, {opacity: disabled? 0: 1}]}>
       <Progress.Bar
         progress={timer / maxTime}
         width={250}
