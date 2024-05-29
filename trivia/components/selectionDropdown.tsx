@@ -25,6 +25,7 @@ export default function SelectionDropdown(props: {
       onChange={(item) => {
         setValue(item.value);
         setIsFocus(false);
+        props.onSelection(item.value); // Call the onSelection function with the selected value
       }}
       labelField={"label"}
       valueField={"label"}
