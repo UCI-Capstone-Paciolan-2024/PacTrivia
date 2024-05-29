@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   answerButton: {
     width: "100%",
     height: "auto",
-    minHeight: 70,
+    minHeight: 95,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'white',
-    fontSize: 18,
+    fontSize: 22,
   },
 });
 
