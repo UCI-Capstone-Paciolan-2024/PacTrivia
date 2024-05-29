@@ -4,15 +4,15 @@ import React, { useRef } from 'react';
 import { AnswerButtonProps } from '../app/interfaces';
 
 const buttonColors = [
-  '#AF7AC5',
-  '#FFB74D',
+  '#c774f2',
+  '#ffad34',
   '#F06292',
   '#64B5F6'
 ];
 
 const greyedOutColor = '#d3d3d3'; // Greyed out color
-const correctAnswerColor = '#4CAF50'; // Green color for correct answer
-const wrongAnswerColor = '#FF0000'; // red color for wrong answer
+const correctAnswerColor = '#72b656'; // Green color for correct answer
+const wrongAnswerColor = '#ff4d3a'; // red color for wrong answer
 
 const AnswerButton: React.FC<AnswerButtonProps> = ({ choice, index, onButtonClick, disabled, greyedOut, checkAnswer }) => {
   const getBackgroundColor = () => {

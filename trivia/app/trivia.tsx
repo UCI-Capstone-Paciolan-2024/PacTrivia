@@ -140,16 +140,16 @@ const TriviaScreen = () => {
     // wait a little bit to allow player to process their answer choice result
     let newProgressColors = [...progressColors];
     if (localCheckAnswer) {
-      newProgressColors[currentQuestionIndex] = '#3ac74d';
+      newProgressColors[currentQuestionIndex] = '#72b656';
       setScore(prevScore => prevScore + 1);
       await playSound(correctSound);
     } else {
-      newProgressColors[currentQuestionIndex] = '#d64747';
+      newProgressColors[currentQuestionIndex] = '#ff6454';
       await playSound(incorrectSound);
     }
 
     // indicate which question we are on
-    newProgressColors[currentQuestionIndex + 1] = '#4a77ff';
+    newProgressColors[currentQuestionIndex + 1] = '#789aff';
 
 
     setTimeout(async () => {
@@ -224,7 +224,7 @@ const TriviaScreen = () => {
       }
 
       let newProgressColors = [...progressColors];
-      newProgressColors[currentQuestionIndex] = '#4a77ff';
+      newProgressColors[currentQuestionIndex] = '#789aff';
       setProgressColors(newProgressColors);
     };
 
@@ -241,7 +241,7 @@ const TriviaScreen = () => {
     if (timer <= 0) {
       // indicate which question we are on
       let newProgressColors = [...progressColors];
-      newProgressColors[currentQuestionIndex + 1] = '#4a77ff';
+      newProgressColors[currentQuestionIndex + 1] = '#789aff';
       // sets questions that have timed out to be gray
       newProgressColors[currentQuestionIndex] = '#9b9b9b';
       setProgressColors(newProgressColors);
@@ -299,7 +299,7 @@ const TriviaScreen = () => {
       </View>
       <View style={styles.content}>
         {questionLoading ? (
-            <ActivityIndicator size="large" color="#4a77ff" />
+            <ActivityIndicator size="large" color="#789aff" />
           ) : (
             <>
               <View style={styles.questionFormat}>
