@@ -1,5 +1,5 @@
 import { Audio } from 'expo-av';
-import { useRouter } from 'expo-router';
+import { useRouter, useGlobalSearchParams } from 'expo-router';
 import getVariable from './storage/getItem';
 import { QuestionLayoutProps } from './interfaces';
 import React, { useState, useEffect, useRef } from "react";
@@ -19,6 +19,8 @@ import saveVariable from './storage/saveItem';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const TriviaScreen = () => {
+  const params = useGlobalSearchParams();
+
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [questionLoading, setQuestionLoading] = useState(true);
   const [currentQuestionIndex, setQuestionIndex] = useState(0);
@@ -97,7 +99,14 @@ const TriviaScreen = () => {
   const incrementIndex = () => {
     if (currentQuestionIndex === totalQuestions - 1) {
       saveVariable("numericalscore", numbericalScore)
-      router.replace({ pathname: "/endpage", params: { score: scoreRef.current } });
+      router.replace({
+        pathname: "/endpage",
+        params: {
+          score: scoreRef.current,
+          selectedTeams: params.selectedTeams,
+        },
+      });
+      
     } else {
       setQuestionIndex(currentQuestionIndex + 1);
     }
