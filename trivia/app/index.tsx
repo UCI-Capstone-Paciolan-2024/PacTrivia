@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
   Switch,
+  SafeAreaView,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { registerDevice } from "../services/device";
@@ -155,7 +156,7 @@ const Index = () => {
     router.push("/trivia");
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.darkmodeToggle}>
         <Text style={{ color: "white", padding: 10   }}>Dark Mode</Text>
         <Switch
@@ -166,7 +167,12 @@ const Index = () => {
           value={isDarkMode}
         />
       </View>
-      <Text style={styles.title}>PacTrivia</Text>
+        <View>
+          <Text style={styles.title}>
+            <Text style={styles.pac}>Pac</Text>
+            <Text style={styles.trivia}>Trivia</Text>
+          </Text>
+        </View>
       <Text style={styles.description}>
         Answer questions correctly for a chance to win cool perks
       </Text>
@@ -193,11 +199,17 @@ const Index = () => {
       <Pressable style={styles.button} onPress={handleStart}>
         <Text style={styles.buttonText}>START</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  pac: {
+    color: 'white',
+  },
+  trivia: {
+    color: '#ff3621',
+  },
   container: {
     flex: 1,
     backgroundColor: "#262626",
