@@ -14,6 +14,7 @@ import getVariable from "./storage/getItem";
 import saveVariable from "./storage/saveItem";
 import { getLocation } from "../components/getLocation";
 import SelectionDropdown from "../components/selectionDropdown";
+import { handleSessionStart } from "../services/session_handler";
 
 const Index = () => {
   const router = useRouter();
@@ -80,81 +81,7 @@ const Index = () => {
       });
   }, []);
 
-  const handleStart = async () => {
-    try {
-      // get unique id, if we do not have one
-      // this is our first time running the game
-      if ((await getVariable("userToken")) == null) {
-        await registerDevice();
-      }
-      // we already have a token, we have played before
-      // get user ID and location [latitude, longitude]
-      const userToken = await getVariable("userToken");
-      getLocation();
-      const userLocation = await getVariable("location");
-
-      try {
-        console.log("start session");
-        // create a custom session using the dropdowns
-        const numQuestions = 10;
-        const currentDate = new Date();
-        const currentTimeInMillis = currentDate.getTime();
-        const newTimeInMillis = currentTimeInMillis + numQuestions * 30 * 1000;
-        const endDate = new Date(newTimeInMillis);
-        const override_game = {
-          start: new Date().toISOString(),
-          end: endDate.toISOString(),
-          teams: selectedTeams,
-          max_sessions: -1,
-          questions_per_session: numQuestions,
-        };
-
-        console.log("override_game: ", override_game);
-        const response = await fetch(
-          `https://api.pactrivia.levarga.com/startSession`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: userToken,
-              userLocation: userLocation,
-              override_game: override_game,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          console.log("request success: ", responseData);
-
-          // saving home team and away teams to display later
-          await saveVariable("teams", responseData.data.game.team_logos);
-
-          // save total number of questions
-          await saveVariable(
-            "totalQs",
-            responseData.data.game.questions_per_session
-          );
-        } else {
-          const responseData = await response.json();
-          console.log(responseData.error);
-          if (responseData.error.type === "NoMoreQuestionsError" || responseData.error.type === "NoValidSessionError") {
-            await saveVariable("userToken", null);
-            await handleStart();
-          }
-        }
-      } catch (error) {
-        console.log("Error when starting the session: ", error);
-      }
-    } catch (error) {
-      console.log("Error when registering for device: ", error);
-    }
-
-    // start trivia page
-    router.push("/trivia");
-  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.darkmodeToggle}>
@@ -196,7 +123,7 @@ const Index = () => {
           setSelectedTeams(currentSelectedTeams);
         }}
       />
-      <Pressable style={styles.button} onPress={handleStart}>
+      <Pressable style={styles.button} onPress={() => {handleSessionStart(selectedTeams, router, false)}}>
         <Text style={styles.buttonText}>START</Text>
       </Pressable>
     </SafeAreaView>

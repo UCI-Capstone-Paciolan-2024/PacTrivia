@@ -4,11 +4,15 @@ import { useRouter, useGlobalSearchParams } from "expo-router";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import getVariable from "./storage/getItem";
 import { Audio } from 'expo-av';
+import { handleSessionStart } from "../services/session_handler";
+
 
 const EndPage = () => {
   const router = useRouter();
   const params = useGlobalSearchParams();
   const score = Number(params.score);
+  const selectedTeams  = JSON.parse(params.selectedTeams);
+
   const [endGameSound, setEndGameSound] = useState<Audio.Sound | null>(null);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -46,12 +50,12 @@ const EndPage = () => {
   }, []);
 
   const handleRestart = () => {
-    router.push("/");
+    handleSessionStart(selectedTeams, router, true);
   };
 
-  const handleNewQuestions = () => {
-    // let 0 be false for retrying the quiz
-    router.push({ pathname: "/", params: { retry: 0 } });
+  const backToHome = () => {
+    // let 0 be false for not retrying the quiz
+    router.push({ pathname: "/"});
   };
 
   const getProgressColor = () => {
@@ -103,7 +107,7 @@ const EndPage = () => {
         <TouchableOpacity style={styles.button} onPress={handleRestart}>
           <Text style={styles.buttonText}>Try Again</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNewQuestions}>
+        <TouchableOpacity style={styles.button} onPress={backToHome}>
           <Text style={styles.buttonText}>Home</Text>
         </TouchableOpacity>
       </View>
