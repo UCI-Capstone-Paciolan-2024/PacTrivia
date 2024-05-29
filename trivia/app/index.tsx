@@ -83,7 +83,7 @@ const Index = () => {
   
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.darkmodeToggle}>
+      <SafeAreaView style={styles.darkmodeToggle}>
         <Text style={{ color: "white", padding: 10   }}>Dark Mode</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#555555" }}
@@ -92,7 +92,7 @@ const Index = () => {
           activeThumbColor={"white"}
           value={isDarkMode}
         />
-      </View>
+      </SafeAreaView>
         <View>
           <Text style={styles.title}>
             <Text style={styles.pac}>Pac</Text>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   darkmodeToggle: {
     position: 'absolute',
-    top: 10,
+    top: 30,
     right: 10,
     flexDirection: 'row',
     alignItems: 'center',
