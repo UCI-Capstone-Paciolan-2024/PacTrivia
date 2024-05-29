@@ -15,7 +15,7 @@ const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime, disabled }) => {
         progress={timer / maxTime}
         width={Dimensions.get("screen").width * 0.65}
         height={10}
-        borderWidth={1}
+        borderWidth={0}
         borderRadius={10}
         color={"#789aff"}
         style={styles.progressBar}
