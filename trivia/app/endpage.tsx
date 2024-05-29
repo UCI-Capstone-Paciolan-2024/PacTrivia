@@ -86,11 +86,11 @@ const EndPage = () => {
         <Text style={styles.congratulatoryMessage}>
           {congratulatoryMessage}
         </Text>
-        <TouchableOpacity style={styles.button} onPress={handleRestart}>
+        {/* <TouchableOpacity style={styles.button} onPress={handleRestart}>
           <Text style={styles.buttonText}>Try Again</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.button} onPress={handleNewQuestions}>
-          <Text style={styles.buttonText}>New Questions</Text>
+          <Text style={styles.buttonText}>Home</Text>
         </TouchableOpacity>
       </View>
     </View>
