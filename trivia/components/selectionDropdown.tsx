@@ -19,7 +19,8 @@ export default function SelectionDropdown(props: {
 
   return (
     <Dropdown
-      style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+      style={[styles.dropdown]}
+      containerStyle={[styles.listContainer]}
       data={options}
       onChange={(item) => {
         setValue(item.value);
@@ -40,9 +41,17 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    padding: 8,
     backgroundColor: "white",
     margin: 5,
-    width: 250
+    width: 250,
+    fontSize: 16,
+  },
+  listContainer: {
+    borderRadius: 8,
+    padding: 8,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    fontSize: 16,
   },
 });
