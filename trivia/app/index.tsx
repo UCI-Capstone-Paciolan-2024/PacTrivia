@@ -139,6 +139,8 @@ const Index = () => {
             "totalQs",
             responseData.data.game.questions_per_session
         )
+        // start trivia page
+        router.push("/trivia");
         } catch (error: any) {
           console.log("Error when starting the session: ", error);
           if (error.type === "NoMoreQuestionsError") {
@@ -153,9 +155,6 @@ const Index = () => {
       Alert.alert("Failed to register", error.message)
       console.log("Error when registering for device: ", error);
     }
-
-    // start trivia page
-    router.push("/trivia");
   };
   return (
     <SafeAreaView style={styles.container}>
