@@ -3,16 +3,13 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Pressable,
   Switch,
-  SafeAreaView,
+  SafeAreaView, Alert,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { registerDevice } from "../services/device";
 import getVariable from "./storage/getItem";
 import saveVariable from "./storage/saveItem";
-import { getLocation } from "../components/getLocation";
 import SelectionDropdown from "../components/selectionDropdown";
 import { handleSessionStart } from "../services/session_handler";
 
@@ -62,7 +59,8 @@ const Index = () => {
       }),
     })
       .then(async (response) => {
-        let data = await response.json();
+        const data = await response.json();
+        if (!response.ok) throw data.error
         let teamData = data.data;
         // teamData should look like:
         /*
@@ -77,7 +75,8 @@ const Index = () => {
         setAvailableTeams(uniqueTeams);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        Alert.alert("Failed to retrieve teams", error.message)
+        console.error("Error retrieving teams:", error);
       });
   }, []);
 
