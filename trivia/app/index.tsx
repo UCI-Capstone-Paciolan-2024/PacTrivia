@@ -88,9 +88,11 @@ const Index = () => {
 
         // determine if we want new questions or not
         let retry = true;
-        if (retryParameters.retry && retryParameters.retry === 0) {
+        if (!retryParameters.retry || retryParameters.retry === 0) {
           retry = false;
         }
+        console.log("retry value:", retry);
+        console.log("override_game: ", override_game);
         const response = await fetch(
           `https://api.pactrivia.levarga.com/startSession`,
           {
@@ -119,6 +121,9 @@ const Index = () => {
             "totalQs",
             responseData.data.game.questions_per_session
           );
+        }else{
+          const responseData = await response.json();
+          console.log(responseData.error);
         }
       } catch (error) {
         console.log("Error when starting the session: ", error);
@@ -182,7 +187,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   button: {
-    backgroundColor: "red",
+    backgroundColor: "#ff3621",
     padding: 16,
     borderRadius: 8,
     marginTop: 32,

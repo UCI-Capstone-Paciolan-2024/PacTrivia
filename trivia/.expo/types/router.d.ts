@@ -238,3 +238,4 @@ declare module "expo-router" {
     T extends AbsoluteRoute | RouteSegments<AbsoluteRoute> | RelativePathString
   >(): T extends AbsoluteRoute ? RouteSegments<T> : T extends string ? string[] : T;
 }
+
