@@ -6,7 +6,6 @@ import getVariable from "./storage/getItem";
 import { Audio } from 'expo-av';
 
 const EndPage = () => {
-  const [numericalScore, setNumericalScore] = useState<number>();
   const router = useRouter();
   const params = useGlobalSearchParams();
   const score = Number(params.score);
@@ -61,17 +60,6 @@ const EndPage = () => {
     }
   };
 
-  useEffect(() => {
-    const initEndScreen = async () => {
-      const numerical_score = await getVariable("numericalscore");
-      if (numerical_score) {
-        setNumericalScore(numerical_score);
-      }
-    }
-
-    initEndScreen();
-  })
-
   const progressColor = getProgressColor();
   const congratulatoryMessage = getCongratulatoryMessage();
 
@@ -95,9 +83,6 @@ const EndPage = () => {
             )}
           </AnimatedCircularProgress>
         </View>
-        <Text style={styles.numericalScore}>
-          Score: {numericalScore}
-        </Text>
         <Text style={styles.congratulatoryMessage}>
           {congratulatoryMessage}
         </Text>
