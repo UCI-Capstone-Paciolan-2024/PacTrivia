@@ -29,6 +29,7 @@ const EndPage = () => {
       try {
         const soundObject = new Audio.Sound();
         await soundObject.loadAsync(require('../assets/endGame.mp3')); 
+        await soundObject.setVolumeAsync(.3); 
         setEndGameSound(soundObject);
         await soundObject.playAsync();
         console.log("End game sound played");
@@ -49,7 +50,7 @@ const EndPage = () => {
   };
 
   const handleNewQuestions = () => {
-    // let 0 be false for retying the quiz
+    // let 0 be false for retrying the quiz
     router.push({ pathname: "/", params: { retry: 0 } });
   };
 
@@ -99,9 +100,9 @@ const EndPage = () => {
         <Text style={[styles.congratulatoryMessage, darkMode ? {color: "white"} : {color: "#333"}]}>
           {congratulatoryMessage}
         </Text>
-        {/* <TouchableOpacity style={styles.button} onPress={handleRestart}>
+        <TouchableOpacity style={styles.button} onPress={handleRestart}>
           <Text style={styles.buttonText}>Try Again</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNewQuestions}>
           <Text style={styles.buttonText}>Home</Text>
         </TouchableOpacity>
