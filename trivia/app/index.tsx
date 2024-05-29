@@ -87,9 +87,9 @@ const Index = () => {
         };
 
         // determine if we want new questions or not
-        let retry = true;
+        let retry = false;
         if (!retryParameters.retry || retryParameters.retry === 0) {
-          retry = false;
+          retry = true;
         }
         console.log("retry value:", retry);
         console.log("override_game: ", override_game);
@@ -124,7 +124,7 @@ const Index = () => {
         } else {
           const responseData = await response.json();
           console.log(responseData.error);
-          if (responseData.error.type === "NoMoreQuestionsError") {
+          if (responseData.error.type === "NoMoreQuestionsError" || responseData.error.type === "NoValidSessionError") {
             await saveVariable("userToken", null);
             await handleStart();
           }

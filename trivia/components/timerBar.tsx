@@ -13,7 +13,7 @@ const TimerBar: React.FC<TimerBarProps> = ({ timer, maxTime, disabled }) => {
     <View style={[styles.timerBarContainer, {opacity: disabled? 0: 1}]}>
       <Progress.Bar
         progress={timer / maxTime}
-        width={Dimensions.get("screen").width}
+        width={Dimensions.get("screen").width * 0.65}
         height={10}
         borderWidth={0}
         borderRadius={10}
