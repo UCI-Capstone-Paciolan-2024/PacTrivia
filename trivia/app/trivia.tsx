@@ -9,7 +9,7 @@ import {
   View,
   Text,
   SafeAreaView,
-  ActivityIndicator,
+  ActivityIndicator, Alert,
 } from "react-native";
 import QuestionLayout from "../components/questionLayout";
 import GameHeader from "../components/gameHeader";
@@ -123,8 +123,8 @@ const TriviaScreen = () => {
           }),
         }
       );
+      const responseData = await response.json();
       if (response.ok) {
-        const responseData = await response.json();
         console.log("Res data: ", responseData.data);
         console.log("answer correct: ", responseData.data.answer_correct);
         console.log(typeof responseData.data.answer_correct);
@@ -133,10 +133,10 @@ const TriviaScreen = () => {
         numbericalScore = responseData.data.subtotal;
 
         setCheckAnswer(responseData.data.answer_correct);
-      } else {
-        console.error("Answer response not okay! Default will be wrong");
-      }
-    } catch (error) {
+      } else throw responseData.error
+    } catch (error: any) {
+      Alert.alert(error.type, error.message)
+      console.error("Answer response not okay! Default will be wrong");
       console.log(error);
     }
 
@@ -185,23 +185,22 @@ const TriviaScreen = () => {
           }),
         }
       );
+      const responseData = await response.json();
       if (response.ok) {
-        const responseData = await response.json();
         setCurrentQuestion(responseData.data.question);
         setCurrentOptions(responseData.data.options);
         const timeout = responseData.data.timeout_seconds * 1000;
         setMaxTime(timeout);
         setTimer(timeout);
         console.log("Current Q: ", responseData.data.question);
-      } else {
+        setQuestionLoading(false);
+      } else throw responseData.json
+    } catch (error: any) {
+      if (currentQuestionIndex !== totalQuestions - 1) {
         setTimer(maxTime);
-        const responseData = await response.json();
-        console.log(responseData.error);
+        Alert.alert("Failed to get next question", error.message)
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setQuestionLoading(false);
     }
   };
 
@@ -352,7 +351,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    height: "80%", 
+    height: "80%",
     padding: 20,
     alignItems: "center",
     width: "90%",
