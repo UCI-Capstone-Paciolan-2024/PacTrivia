@@ -1,4 +1,5 @@
 // sessionHandler.tsx
+import { Alert } from 'react-native';
 import { registerDevice } from "../services/device";
 import getVariable from "../app/storage/getItem";
 import saveVariable from "../app/storage/saveItem";
@@ -46,31 +47,37 @@ export const handleSessionStart = async (selectedTeams: string[], router: any, r
         }
       );
 
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("request success: ", responseData);
+      const responseData = await response.json();
+      if (!response.ok) throw responseData.error;
+      console.log("request success: ", responseData);
+      
+      // saving home team and away teams to display later
+      await saveVariable("teams", responseData.data.game.team_logos);
 
-        await saveVariable("teams", responseData.data.game.team_logos);
-        await saveVariable("totalQs", responseData.data.game.questions_per_session);
-      } else {
-        const responseData = await response.json();
-        console.log(responseData.error);
-        if (responseData.error.type === "NoMoreQuestionsError" || responseData.error.type === "NoValidSessionError") {
-          await saveVariable("userToken", null);
-          await handleSessionStart(selectedTeams, router, false); 
-        }
-      }
-    } catch (error) {
+      // save total number of questions
+      await saveVariable(
+        "totalQs",
+        responseData.data.game.questions_per_session
+      );
+
+      // start trivia page
+      router.push({
+        pathname: '/trivia',
+        params: { selectedTeams: JSON.stringify(selectedTeams) },
+      });
+      
+    } catch (error: any) {
       console.log("Error when starting the session: ", error);
+      if (error.type === "NoMoreQuestionsError") {
+        console.log("removing saved token");
+        await saveVariable("userToken", null);
+        await handleSessionStart(selectedTeams, router, false);
+      } else {
+        Alert.alert("Error starting session", error.message);
+      }
     }
-  } catch (error) {
+  } catch (error: any) {
+    Alert.alert("Failed to register", error.message);
     console.log("Error when registering for device: ", error);
   }
-
-  console.log("selectedTeams from session handler", selectedTeams);
-
-  router.push({
-    pathname: '/trivia',
-    params: { selectedTeams: JSON.stringify(selectedTeams) },
-  });
 };
