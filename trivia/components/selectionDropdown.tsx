@@ -43,5 +43,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     backgroundColor: "white",
     margin: 5,
+    width: 250
   },
 });
