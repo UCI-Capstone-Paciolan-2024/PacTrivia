@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
   Switch,
-  SafeAreaView,
+  SafeAreaView, Alert,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { registerDevice } from "../services/device";
@@ -61,7 +61,8 @@ const Index = () => {
       }),
     })
       .then(async (response) => {
-        let data = await response.json();
+        const data = await response.json();
+        if (!response.ok) throw data.error
         let teamData = data.data;
         // teamData should look like:
         /*
@@ -76,7 +77,8 @@ const Index = () => {
         setAvailableTeams(uniqueTeams);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        Alert.alert("Failed to retrieve teams", error.message)
+        console.error("Error retrieving teams:", error);
       });
   }, []);
 
@@ -125,30 +127,30 @@ const Index = () => {
           }
         );
 
-        if (response.ok) {
-          const responseData = await response.json();
-          console.log("request success: ", responseData);
+        const responseData = await response.json();
+        if (!response.ok) throw responseData.error
+        console.log("request success: ", responseData);
 
-          // saving home team and away teams to display later
-          await saveVariable("teams", responseData.data.game.team_logos);
+        // saving home team and away teams to display later
+        await saveVariable("teams", responseData.data.game.team_logos);
 
-          // save total number of questions
-          await saveVariable(
+        // save total number of questions
+        await saveVariable(
             "totalQs",
             responseData.data.game.questions_per_session
-          );
-        } else {
-          const responseData = await response.json();
-          console.log(responseData.error);
-          if (responseData.error.type === "NoMoreQuestionsError" || responseData.error.type === "NoValidSessionError") {
+        )
+        } catch (error: any) {
+          console.log("Error when starting the session: ", error);
+          if (error.type === "NoMoreQuestionsError") {
+            console.log("removing saved token");
             await saveVariable("userToken", null);
             await handleStart();
+          } else {
+            Alert.alert("Error starting session", error.message)
           }
         }
-      } catch (error) {
-        console.log("Error when starting the session: ", error);
-      }
-    } catch (error) {
+    } catch (error: any) {
+      Alert.alert("Failed to register", error.message)
       console.log("Error when registering for device: ", error);
     }
 
